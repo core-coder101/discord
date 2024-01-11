@@ -1,13 +1,663 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+html{
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* ---------------------------------- Servers ---------------------------------- */
+.mainDiv{
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+}
+
+.directMessagesIconDiv{
+  width: 50px;
+  height: 50px;
+  border: 0;
+  border-radius: 50%;
+  background-color: #313338;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+.directMessagesIcon{
+  width: 30px;
+  height: auto;
+}
+.directMessagesIconDiv:hover{
+  border-radius: 25%;
+  cursor: pointer;
+  background-color: #5865F2;
+}
+.sideBarIconsDiv{
+  width: 50px;
+  height: 50px;
+  border: 0;
+  border-radius: 50%;
+  background-color: #313338;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+.sideBarIconsDiv:hover{
+  background-color: #23A559;
+  border-radius: 25%;
+}
+.sideBarIcons{
+  width: 25px;
+  height: auto;
+}
+.sideBarIcons:hover{
+  cursor: pointer;
+  border-radius: 25%;
+}
+.addServerIcon{
+  margin-top: 8px;
+}
+.exploreServers{
+  margin-top: 8px;
+}
+.downloadAppIcon{
+  margin-top: 8px;
+  margin-bottom: 15px;
+}
+.serversDiv{
+  padding-top: 10px;
+  width: 75px;
+  background-color: #1E1F22;
+  height: 100%;
+  margin: 0;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: top;
+}
+.selectedIconHighlight{
+  background-color: white;
+  position: relative;
+  right: 20px;
+}
+.iconOutsideDiv{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.iconSeperator{
+  background-color: #34363B;
+  width: 30px;
+  height: 3px;
+  margin-top: 8px;
+}
+.serversDiv::-webkit-scrollbar{
+  width: 0;
+}
+/* ---------------------------------- ServerIcon ---------------------------------- */
+.serverIcon img{
+  width: 50px;
+  height: 50px;
+  border: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  margin-top: 8px;
+}
+.serverIcon img:hover{
+  border-radius: 25%;
+  cursor: pointer;
+}
+/* ---------------------------------- Friends ---------------------------------- */
+.friendsAndServersDiv {
+  width: max-content;
+}
+.friendsMainDiv{
+  height: 94.5%;
+  width: 240px;
+  background-color: #2B2D31;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: top;
+  align-items: center;
+  flex-direction: column;
+}
+
+.friendsAndServersDiv{
+  display: flex;
+}
+.findConversationOuterDiv{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 45px;
+  background-color: #2B2D31;
+  box-shadow: #1E1F22 0px 1px;
+  position: sticky;
+  top: 0;
+}
+.findConversation{
+  width: 100%;
+  margin: 10px;
+  display: flex;
+  align-items: center;
+  background-color: #1E1F22;
+  color: #949BA4;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+  padding: 3px;
+}
+.findConversation p{
+  margin: 0;
+  margin-left: 5px;
+}
+.findConversation:hover{
+  cursor: pointer;
+}
+.SideBarPanels{
+  width: 90%;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 7px;
+  border-radius: 0.5rem;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  color: #949BA4;
+}
+.SideBarPanels:hover{
+  background-color: #35373C;
+  color: white;
+  cursor: pointer;
+}
+.SideBarPanels h6{
+  margin: 0;
+  margin-left: 15px;
+}
+.sideBarIcons{
+  width: 25px;
+}
+.directMessages{
+  display: flex;
+  color: #949BA4;
+  justify-content: space-between;
+  width: 90%;
+  margin-top: 10px;
+  transition: all 0.3s;
+}
+.directMessages p:hover{
+  color: white;
+  cursor: pointer;
+}
+
+.Friend{
+  display: flex;
+  width: 90%;
+  align-items: center;
+  color: #949BA4;
+  padding: 5px;
+  border-radius: 0.35rem;
+}
+.Friend:hover{
+  color: white;
+  background-color: #35373C;
+  cursor: pointer;
+}
+.highlight{
+  color: white;
+  font-style: bold;
+}
+.Friend img{
+  width: 40px;
+  border: none;
+  border-radius: 50%;
+  margin: 0;
+}
+.Friend p{
+  margin: 0;
+  margin-left: 0px;
+  font-size: 18px;
+}
+.statusContainerDiv{
+  display: flex;
+  align-items: end;
+}
+.status{
+  border: #747881 solid 4px;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  position: relative;
+}
+.outerStatusDiv{
+  border: black solid 3px;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  right: 13px;
+}
+.innerStatus{
+  position: relative;
+  border: black solid 2px;
+  border-radius: 50%;
+  right: 1px;
+  bottom: 1px;
+  width: 2px;
+  height: 2px;
+}
+.selfStatus{
+  position: fixed;
+  background-color: #232428;
+  overflow-x: hidden;
+  width: 240px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  bottom: 0;
+  padding: 3px;
+  left: 74.5px;
+}
+
+.selfInfo p{
+  margin: 0;
+  color: #949BA4;
+  font-size: small;
+}
+.selfInfo h6{
+  font-size: smaller;
+  color: white;
+  margin: 0;
+  font-weight: normal;
+}
+.selfInfo{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+  margin: 0;
+}
+.cropped-ofp {
+  width: 30px; 
+  height: 30px; 
+  object-fit: cover;
+  border-radius: 50%;
+  object-position: 25% 25%; 
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 5px;
+}
+.cropped-ofp img{
+  height: 100%;
+}
+.statusOnline{
+  border: #23A55A solid 5px;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  position: relative;
+  background-color: #23A55A;
+}
+.selfStatusInfoDiv{
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.selfStatusIconsDiv{
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  width: 100%;
+}
+.selfStatusIconsInnerDiv{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 5px;
+  padding: 5px;
+  margin-right: 5px;
+}
+.selfStatusIconsInnerDiv:hover{
+  background-color: #3A3B41;
+  cursor: pointer;
+}
+.selfStatusIcons{
+  width: 20px;
+  height: 20px;
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+.friendsMainDiv::-webkit-scrollbar{
+  width: 5px;
+  
+}
+.friendsMainDiv::-webkit-scrollbar-track{
+  background: transparent;
+  margin-top: 45px;
+}
+.friendsMainDiv::-webkit-scrollbar-thumb{
+  background: rgb(26,27,30);
+  border-radius: 5px;
+  transition: all 0.3s;
+}
+.scrollbarDisappear::-webkit-scrollbar-thumb{
+  background: transparent;
+}
+.selfStatusInfoDiv:hover{
+  background-color: #3C3E44;
+  cursor: pointer;
+}
+
+/* ---------------------------------- Chat ---------------------------------- */
+
+.mainChatDiv{
+  height: 100%;
+  width: 100%;
+  background-color: #313338;
+}
+
+.pDiv{
+  width: max-content;
+}
+
+.fixedTopSection{
+  display: flex;
+  box-shadow: #1E1F22 0px 1px;
+  align-items: center;
+  height: 45px;
+  width: 100%;
+  background-color: #313338;
+}
+.ChattingIconsDiv{
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  width: 100%;
+}
+.ChattingIcons{
+  width: 25px;
+  height: 25px;
+  margin-right: 15px;
+}
+.ChattingIcons:hover{
+  cursor: pointer;
+}
+.ChattingIconsDiv input{
+  background-color: #1E1F22;
+  border: 0;
+  border-radius: 0.25rem;
+  margin-right: 15px;
+  padding-left: 5px;
+  color: white;
+  min-width: 100px;
+  outline: none;
+}
+
+
+
+
+.MessageInputDiv{
+  position: sticky;
+  bottom: 0;
+  margin: 0 20px 0 20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: #383A40;
+  width: auto;
+  border-radius: 0.5rem;
+  padding: 8px;
+  max-height: 100%;
+}
+.MessageInputDiv textarea{
+  width: 100%;
+  margin-right: 15px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: white;
+  
+  height: max-content;
+  max-height: 100%;
+  overflow-y: auto;
+  resize: none;
+  height: 30px;
+}
+.MessageInputDiv textarea:hover{
+  cursor: text;
+}
+.ChatArea{
+  width: 100%;
+  height: 95%;
+  padding-bottom: 30px;
+  display: flex;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+.messagesDiv{
+  overflow-y: scroll;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  margin-right: 5px;
+  height: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+}
+.messagesDiv::-webkit-scrollbar{
+  width: 8px;
+}
+.messagesDiv::-webkit-scrollbar-track{
+  background: rgb(43,45,49);
+  border-radius: 0.5rem;
+}
+.messagesDiv::-webkit-scrollbar-thumb{
+  background: rgb(26,27,30);
+  border-radius: 0.5rem;
+}
+.OuterDiv{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* ------------------------------- Message.jsx ------------------------------- */
+.MessageMainDiv{
+  display: flex;
+  color: white;
+  margin-right: 20px;
+  border: 0;
+  border-radius: 0.5rem;
+  margin-top: 10px;
+}
+.MessageMainDiv:hover{
+  background-color: #2E3035;
+}
+.MessageMainDiv img{
+  width: 40px;
+  height: 40px;
+  margin-top: 10px;
+  border-radius: 50%;
+}
+.MessageMainDiv > div{
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+}
+.MessageMainDiv > div > div{
+  display: flex;
+  margin-top: 10px;
+} 
+.MessageMainDiv h6{
+  margin: 0;
+  margin-right: 10px;
+}
+.messageBody{
+  margin: 0;
+  font-size: medium;
+  color: #DBDEE1;
+}
+.time{
+  margin: 0;
+  font-size: small;
+  color: grey;
+}
+/* ------------------------------- DateSeperator.jsx ------------------------------- */
+
+.DateSeperatorMainDiv{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+.greyLines{
+  width: 50%;
+  height: 1px;
+  background-color: #3F4147;
+}
+.dateSeperatorDateDiv{
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.dateSeperatorDateDiv p{
+  margin: 0;
+  color: #8A919A;
+  font-size: smaller;
+  font-weight: 500;
+  width: max-content;
+}
+/* ------------------------------- RecentMessage.jsx ------------------------------- */
+.recentMessageTime{
+  width: max-content;
+  font-size: x-small;
+  margin: 5px 8px 0 2px;
+}
+.recentMessageTimeDiv{
+  margin: 0 !important;
+}
+.recentMessageDiv{
+  margin: 0;
+}
+.transparent{
+  color: transparent;
+}
+
+/* ------------------------------- FriendProfileDiv.jsx ------------------------------- */
+
+.FriendProfileDiv{
+  height: 100%;
+  width: 58%;
+  background-color: #232428;
+}
+.FriendProfileDiv > div{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: center;  
+}
+.FriendProfileImageDiv{
+  background-color: #A3A3A3;
+  width: 100%;
+  height: 15%;
+  display: flex;
+  justify-content: left;
+  align-items: flex-end;
+}
+.FriendProfileImageDiv > div{
+  position: relative;
+  top: 50px;
+  left: 10px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #232428;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.FriendProfileImageDiv div img{
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+.online{
+  width: 20px !important;
+  height: 20px !important;
+  border: solid black 2px;
+  position: relative;
+  right: 20px;
+}
+.imageAndStatus{
+  margin-left: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+.FriendInfoDiv{
+  width: 90%;
+  height: 25%;
+  background-color: #111214;
+  margin-top: 70px;
+  border-radius: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.FriendInfoDiv div{
+  color: white;
+  width: 90%;
+  margin: 0 5px 0 0;
+  border-bottom: #2E2F34 solid 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 33%;
+}
+.NoteDiv{
+  border: 0 !important;
+}
+.FriendInfoDiv div p{
+  color: #DBDEE1;
+  margin: 0;
+}
+.FriendInfoDiv div h6{
+  font-size: small;
+  font-weight: 600;
+  margin: 0;
+}
+.FriendInfoDiv div h4{
+  margin: 0;
+}
+.FriendInfoDiv div input{
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  font-size: smaller;
+  color: white;
+}
+.MutualFriendsDiv{
+  margin: 20px;
+  height: 5% !important;
 }
