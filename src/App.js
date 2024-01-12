@@ -1,8 +1,8 @@
 import React from "react";
 import Main from "./components/Main";
-import Login from "./components/Login";
+import LoginOrRegister from "./components/LoginOrRegister";
 
-let user = true
+let user = false
 document.addEventListener('contextmenu',event => {
   if(event.button === 2){
     // event.preventDefault()
@@ -12,7 +12,7 @@ document.addEventListener('contextmenu',event => {
 function App() {
   return (
     <div className="App">
-      { user ? <Main /> : <Login /> }
+      { user ? <Main /> : <LoginOrRegister /> }
     </div>
   );
 }
