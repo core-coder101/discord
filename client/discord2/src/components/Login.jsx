@@ -13,6 +13,12 @@ function Login(props){
         password: ''
     })
 
+    const [loginError, setLoginError] = useState('')
+
+    socket.on('loginError', (errorMessage) => {
+        setLoginError(errorMessage)
+    })
+
     function handleChange(event){
         let { name, value } = event.target
         setFormData(prevValue => {
@@ -27,19 +33,29 @@ function Login(props){
         socket.emit("loginUser", formData)
     }
 
+    function handleSubmit(e){
+        e.preventDefault()
+        loginUser()
+    }
+
     return(
         <div className="LoginMainDiv">
+            <form onSubmit={(e)=>{handleSubmit(e)}}>
             <div className="FormAreaOuterDiv">
                 <div className="WelcomeDiv">
                     <h5>Welcome back!</h5>
                     <p>We're so excited to see you again!</p>
                     <div className="FormDiv">
                         <h6>EMAIL OR PHONE NUMBER <span style={{color:"red"}}>*</span></h6>
-                        <input value={formData.email} name="email" onChange={(e)=>{handleChange(e)}} />
+                        <input type="email" errorMessage="Test" value={formData.email} name="email" onChange={(e)=>{handleChange(e)}} required />
                         <h6>PASSWORD <span style={{color:"red"}}>*</span></h6>
-                        <input value={formData.password} type="password" name="password" onChange={(e)=>{handleChange(e)}} />
+                        <input value={formData.password} type="password" name="password" onChange={(e)=>{handleChange(e)}} required />
+                        {loginError && (
+                            <div className="errorDiv">
+                                <p>{loginError}</p>
+                            </div>)}
                         <a href="">Forgot your password?</a>
-                        <button onClick={loginUser}>Log in</button>
+                        <button type="submit">Log in</button>
                         <div>
                             <p>Need an account?</p>
                             <button className="loginRegisterLinks" onClick={()=>{setSelectedPage('register')}} href="">Register</button>
@@ -53,6 +69,7 @@ function Login(props){
                     <p>Scan this with the <span style={{fontWeight: "bold"}}>Discord mobile app</span> to log in instantly.</p>
                 </div>
             </div>
+            </form>
         </div>
     )
 }

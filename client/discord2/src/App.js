@@ -3,6 +3,7 @@ import Main from "./components/Main";
 import LoginOrRegister from "./components/LoginOrRegister";
 import Cookies from "universal-cookie";
 import { jwtDecode } from "jwt-decode";
+import io from "socket.io-client"
 
 document.addEventListener('contextmenu',event => {
   if(event.button === 2){
@@ -13,13 +14,15 @@ document.addEventListener('contextmenu',event => {
 function App() {
 
   const cookies = new Cookies
+  const socket = io.connect("http://localhost:5000")
 
   useEffect(() =>{
     let token = cookies.get('token')
     if(token){
       let decoded = jwtDecode(token)
-      console.log(decoded);
-      setUser(decoded)
+      socket.emit("requestData", decoded)
+      // console.log(decoded);
+      // setUser(decoded)
     }
   }, [])  
 
@@ -27,7 +30,7 @@ function App() {
 
   return (
     <div className="App">
-      { user ? <Main user={user} /> : <LoginOrRegister setUser={setUser} /> }
+      { user ? <Main user={user} socket={socket} /> : <LoginOrRegister socket={socket} setUser={setUser} /> }
     </div>
   );
 }

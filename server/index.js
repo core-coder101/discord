@@ -110,6 +110,9 @@ io.on("connection", (socket)=>{
                             httpOnly: true
                         }
                         socket.emit("createToken",token, cookieOptions)
+                    } else if(!matched){
+                        // Correct Email but Wrong Password
+                        socket.emit('loginError', 'Incorrect password')
                     }
                 })
             }

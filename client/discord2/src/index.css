@@ -804,3 +804,15 @@ html{
 .disabledButton:hover{
   cursor: default !important;
 }
+.errorDiv{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background-color: rgb(218, 81, 81);
+  height: 40px;
+  margin-top: 10px;
+}
+.errorDiv p {
+  margin: 0;
+}

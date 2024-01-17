@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import Login from "./Login";
 import Register from './Register'
-import { io } from "socket.io-client";
 import Cookies from "universal-cookie"
 import {jwtDecode} from "jwt-decode"
 
 function LoginOrRegister(props){
     const [selectedPage, setSelectedPage] = useState('login')
 
-    let {setUser} = props
+    let {setUser, socket} = props
 
 
-    const socket = io.connect("http://localhost:5000")
+    
 
     const cookies = new Cookies()
 

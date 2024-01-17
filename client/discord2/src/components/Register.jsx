@@ -18,6 +18,7 @@ function Register(props){
         dateOfBirth: '',
     })
     const [checkbox, setCheckBox] = useState(false)
+    const [registerError, setRegisterError] = useState('')
 
     function dataChange(event){
         let {name, value} = event.target
@@ -28,14 +29,25 @@ function Register(props){
                 [name]: value
             }
         })
+        setRegisterError('')
     }
+
+    socket.on('registerError', (errorMessage)=>{
+        setRegisterError(errorMessage)
+    })
 
     function registerUser(){
         socket.emit("registerUser", formData)
     }
 
+    function handleSubmit(e){
+        e.preventDefault()
+        registerUser()
+    }
+
     return(
         <div className="LoginMainDiv">
+            <form onSubmit={(e)=>{handleSubmit(e)}}>
             <div className="FormAreaOuterDiv">
                 <div className="RegisterDiv">
                     <h4>Create an account</h4>
@@ -52,7 +64,11 @@ function Register(props){
                         <input name="password" value={formData.password} onChange={(e)=>{dataChange(e)}} required type="password" />
                         <h6>DATE OF BIRTH <span style={{color:"red"}}>*</span></h6>
                             <input name="dateOfBirth" value={formData.dateOfBirth} onChange={(e)=>{dataChange(e)}} required type="date" />
-                        <button className={!checkbox ? "disabledButton" : ""} disabled={!checkbox} onClick={registerUser}>Continue</button>
+                            {registerError && (
+                            <div className="errorDiv">
+                                <p>{registerError}</p>
+                            </div>)}
+                        <button className={!checkbox ? "disabledButton" : ""} disabled={!checkbox} type="submit">Continue</button>
                         <div className="checkBoxDiv">
                             <input onClick={()=>{setCheckBox((prevValue)=>!prevValue)}} type="checkbox" />
                             <p>I have read and agree to Discord's <a href="">Terms of Services</a> and <a href="">Privacy Policy</a></p>
@@ -65,6 +81,7 @@ function Register(props){
 
                 </div>
             </div>
+            </form>
         </div>
     )
 }
