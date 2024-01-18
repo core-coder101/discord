@@ -8,14 +8,10 @@ import { FaGear } from "react-icons/fa6";
 function UserIcon(){
     return(
         <div className="statusContainerDiv">
-            <div className="cropped-ofp">
-                <img src='https://static1-es.millenium.gg/articles/7/24/77/7/@/115335-tsushima-article_m-1.jpg'></img>
-            </div>
-            <div className="outerStatusDiv">
-                <div className="statusOnline">
-                    <div className="">
-
-                    </div>
+            <div>
+                <div className="imageAndStatus">
+                    <img className="icon" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNOzfYPaLIvUyXadENQul27Z4R2Nuc2nuhDHHLbF8eATKEYN4SjdUoZIlWpkH9Ov4Mryc&usqp=CAU" />
+                    <img className="online" src="https://i.postimg.cc/g2y6mgW9/offline.png" />
                 </div>
             </div>
         </div>

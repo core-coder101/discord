@@ -233,6 +233,12 @@ html{
   display: flex;
   align-items: end;
 }
+.icon {
+  width: 40px;
+  border: 0;
+  border-radius: 50%;
+  
+}
 .status{
   border: #747881 solid 4px;
   border-radius: 50%;
@@ -362,6 +368,10 @@ html{
 .selfStatusInfoDiv:hover{
   background-color: #3C3E44;
   cursor: pointer;
+}
+.FriendImgStatus{
+  display: flex;
+  align-items: flex-end;
 }
 
 /* ---------------------------------- Chat ---------------------------------- */
@@ -606,11 +616,10 @@ html{
   border-radius: 50%;
 }
 .online{
-  width: 20px !important;
-  height: 20px !important;
-  border: solid black 2px;
+  width: 15px !important;
+  height: 15px !important;
   position: relative;
-  right: 20px;
+  right: 15px;
 }
 .imageAndStatus{
   margin-left: 20px;

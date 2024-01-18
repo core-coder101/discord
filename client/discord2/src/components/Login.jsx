@@ -47,7 +47,7 @@ function Login(props){
                     <p>We're so excited to see you again!</p>
                     <div className="FormDiv">
                         <h6>EMAIL OR PHONE NUMBER <span style={{color:"red"}}>*</span></h6>
-                        <input type="email" errorMessage="Test" value={formData.email} name="email" onChange={(e)=>{handleChange(e)}} required />
+                        <input type="email" value={formData.email} name="email" onChange={(e)=>{handleChange(e)}} required />
                         <h6>PASSWORD <span style={{color:"red"}}>*</span></h6>
                         <input value={formData.password} type="password" name="password" onChange={(e)=>{handleChange(e)}} required />
                         {loginError && (
