@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import Friends from './Friends'
 import Chat from "./Chat";
+import EmptyScreen from "./EmptyScreen"
 
 function Main(props){
+
+    const [selectedFriend, setSelectedFriend] = useState('')
 
     let {
         user
@@ -10,8 +13,8 @@ function Main(props){
 
     return(
         <div className="mainDiv">
-            <Friends user={user} />
-            <Chat user={user} />
+            <Friends user={user} setSelectedFriend={setSelectedFriend} />
+            {selectedFriend ? (<Chat user={user} />) : <EmptyScreen />}
         </div>
     )
 }

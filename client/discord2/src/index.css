@@ -220,7 +220,6 @@ html{
 }
 .Friend img{
   width: 40px;
-  border: none;
   border-radius: 50%;
   margin: 0;
 }
@@ -239,36 +238,23 @@ html{
   border-radius: 50%;
   
 }
-.status{
-  border: #747881 solid 4px;
+.customUserIcon{
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
-  width: 10px;
-  height: 10px;
-  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.outerStatusDiv{
-  border: black solid 3px;
-  border-radius: 50%;
-  width: 15px;
-  height: 15px;
-  padding: 0;
-  margin: 0;
-  position: relative;
-  right: 13px;
+.userIcon{
+  width: 20px;
 }
-.innerStatus{
-  position: relative;
-  border: black solid 2px;
-  border-radius: 50%;
-  right: 1px;
-  bottom: 1px;
-  width: 2px;
-  height: 2px;
-}
+
+
 .selfStatus{
   position: fixed;
   background-color: #232428;
-  overflow-x: hidden;
+  overflow: hidden;
   width: 263px;
   height: 50px;
   display: flex;
@@ -615,11 +601,25 @@ html{
   height: 80px;
   border-radius: 50%;
 }
+
 .online{
   width: 15px !important;
   height: 15px !important;
   position: relative;
   right: 15px;
+  border: 2px solid black;
+  border-radius: 50%;
+}
+.friendProfileStatus{
+  width: 20px !important;
+  height: 20px !important;
+}
+.offline{
+  width: 15px !important;
+  height: 15px !important;
+  position: relative;
+  right: 15px;
+  border-radius: 50%;
 }
 .imageAndStatus{
   margin-left: 20px;
@@ -824,4 +824,12 @@ html{
 }
 .errorDiv p {
   margin: 0;
+}
+
+/* ------------------------------- EmptyScreen.jsx ------------------------------- */
+
+.EmptyScreenDiv{
+  width: 100%;
+  height: 100%;
+  background-color: #313338;
 }

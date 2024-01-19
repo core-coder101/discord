@@ -18,7 +18,11 @@ import Message from "./Message"
 import DateSeperator from "./DateSeperator";
 import RecentMessage from "./RecentMessage";
 
-function Chat(){
+function Chat(props){
+
+    let {
+        user
+    } = props
 
     const [profileIconClicked, setProfileIconClicked] = useState(false)
 
@@ -26,9 +30,12 @@ function Chat(){
         <div className="mainChatDiv">
             <div className="fixedTopSection">
                 <div className="Friend highlight ">
-                    <UserIcon />
+                    <UserIcon 
+                        isOnline={true}
+                        user={user}
+                    />
                     <div className="pDiv">
-                        <p>Steve</p>
+                        <p>{user.displayName}</p>
                     </div>
                 </div>
                 <div className="ChattingIconsDiv">

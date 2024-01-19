@@ -8,7 +8,7 @@ function FriendProfile(){
                     <div>
                         <div className="imageAndStatus">
                             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNOzfYPaLIvUyXadENQul27Z4R2Nuc2nuhDHHLbF8eATKEYN4SjdUoZIlWpkH9Ov4Mryc&usqp=CAU" />
-                            <img className="online" src="https://i.postimg.cc/g2y6mgW9/offline.png" />
+                            <img className="online friendProfileStatus" src="https://i.postimg.cc/pXqvD8RN/online.png" />
                         </div>
                     </div>
                 </div>

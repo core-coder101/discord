@@ -24,11 +24,14 @@ import { FaGear } from "react-icons/fa6";
 function Friends(props){
 
     let {
-        user
+        user,
+        setSelectedFriend
     } = props
 
     // for scrollbar
     const [scrollbarVisibility, setScrollbarVisibility] = useState("")
+
+    const [isOnline, setIsOnline] = useState(true)
 
     return(
         <div
@@ -59,7 +62,7 @@ function Friends(props){
             <ServerIcon />
             <ServerIcon />
             <ServerIcon />
-            <ServerIcon />
+            <ServerIcon  />
             <ServerIcon />
             <ServerIcon />
             <ServerIcon />
@@ -139,23 +142,14 @@ function Friends(props){
                 <p>Direct Messages</p>
                 <IoMdAdd color="#949BA4" />
             </div>
-            <Friend />
-            <Friend />
-            <Friend />
-            <Friend />
-            <Friend />
-            <Friend />
-            <Friend />
-            <Friend />
-            <Friend />
-            <Friend />
-            <Friend />
-            <Friend />
-            <Friend />
-            <Friend />
+            <Friend setSelectedFriend={setSelectedFriend} />
+
             <div className="selfStatus">
                 <div className="selfStatusInfoDiv">
-                    <UserIcon />
+                    <UserIcon 
+                        isOnline={isOnline}
+                        user={user}
+                    />
                     <div className="selfInfo">
                         <h6>{user.displayName}</h6>
                         <p>Online</p>

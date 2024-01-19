@@ -33,6 +33,8 @@ const io = new Server(server, {
 
 io.on("connection", (socket)=>{
 
+
+
     socket.on("registerUser", async (data) => {
 
         try{
@@ -54,7 +56,8 @@ io.on("connection", (socket)=>{
         
         let hashedPassword = await bcrypt.hash(data.password, 8)
         let colorsArray = ["aqua", "black", "blue", "fuchsia", "gray", "green", "lime", "maroon", "navy", "olive", 'purple', 'red', 'silver', 'teal', 'yellow']
-        let x = Math.floor(Math.random() * 15)
+        console.log(colorsArray.length);
+        let x = Math.floor(Math.random() * 14)
         let color = colorsArray[x]
 
         data = {
