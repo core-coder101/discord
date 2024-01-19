@@ -66,13 +66,18 @@ io.on("connection", (socket)=>{
             color: color
         }
 
+        let tokenData = {
+            email: data.email,
+            id: data.id,
+        }
+
         db.query("INSERT INTO users SET ?", data, (err) =>{
             if(err){
                 console.log(err);
             } else{
 
             console.log("User Registered");
-            const token = jwt.sign(data,process.env.JWT_SECRET,{ expiresIn: process.env.JWT_EXPIRES_IN })
+            const token = jwt.sign(tokenData,process.env.JWT_SECRET,{ expiresIn: process.env.JWT_EXPIRES_IN })
             const cookieOptions = {
                 maxAge: process.env.COOKIE_EXPIRES_IN,
                 httpOnly: true
@@ -106,8 +111,11 @@ io.on("connection", (socket)=>{
                         console.log(err);
                     } else if(matched){
                         // Correct Email and Correct Password:
-                        let dbDataInObject = {...dbData[0]}
-                        const token = jwt.sign(dbDataInObject,process.env.JWT_SECRET,{ expiresIn: process.env.JWT_EXPIRES_IN })
+                        let tokenData = {
+                            email: dbData[0].email,
+                            id: dbData[0].id,
+                        }
+                        const token = jwt.sign(tokenData,process.env.JWT_SECRET,{ expiresIn: process.env.JWT_EXPIRES_IN })
                         const cookieOptions = {
                             maxAge: process.env.COOKIE_EXPIRES_IN,
                             httpOnly: true
@@ -121,6 +129,29 @@ io.on("connection", (socket)=>{
             }
             
             
+        } catch(err){
+            console.log(err);
+        }
+    })
+    socket.on("requestData", async (data) => {
+        try{
+            let dbData = await new Promise((resolve,reject) => {
+                db.query("SELECT * FROM users WHERE email = ?", [data.email], (err,result) =>{
+                    if(err){
+                        reject(err);
+                    } else{
+                        resolve(result);
+                    }
+                })
+            })
+
+            if(!dbData.length > 0){
+               console.log("requestData failed: email not found in DB");
+               return;
+            }
+
+            socket.emit("receiveData", dbData[0])
+
         } catch(err){
             console.log(err);
         }

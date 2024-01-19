@@ -114,7 +114,7 @@ function Friends(props){
                     <p>Find or start a conversation</p>
                 </div>
             </div>
-            <div className="SideBarPanels">
+            <div onClick={()=>{setSelectedFriend('')}} className="SideBarPanels">
                 <div>
                     <IoPerson className="sideBarIcons" color="#949BA4" />
                 </div>

@@ -21,10 +21,12 @@ function App() {
     if(token){
       let decoded = jwtDecode(token)
       socket.emit("requestData", decoded)
-      console.log(decoded);
-      setUser(decoded)
     }
   }, [])  
+
+  socket.on('receiveData', (dbData)=>{
+    setUser(dbData)
+  })
 
   const [user, setUser] = useState(null)
 
