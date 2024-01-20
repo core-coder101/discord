@@ -25,13 +25,12 @@ function Friends(props){
 
     let {
         user,
-        setSelectedFriend
+        setSelectedFriend,
+        friendsInfo
     } = props
 
     // for scrollbar
     const [scrollbarVisibility, setScrollbarVisibility] = useState("")
-
-    const [isOnline, setIsOnline] = useState(true)
 
     return(
         <div
@@ -62,7 +61,7 @@ function Friends(props){
             <ServerIcon />
             <ServerIcon />
             <ServerIcon />
-            <ServerIcon  />
+            <ServerIcon />
             <ServerIcon />
             <ServerIcon />
             <ServerIcon />
@@ -142,12 +141,18 @@ function Friends(props){
                 <p>Direct Messages</p>
                 <IoMdAdd color="#949BA4" />
             </div>
-            <Friend setSelectedFriend={setSelectedFriend} />
+            {friendsInfo && friendsInfo.length > 0 && friendsInfo.map((friend, index) =>(
+                <Friend 
+                    key={index}
+                    id={index}
+                    friend={friend}
+                    setSelectedFriend={setSelectedFriend}
+                />
+            ))}
 
             <div className="selfStatus">
                 <div className="selfStatusInfoDiv">
                     <UserIcon 
-                        isOnline={isOnline}
                         user={user}
                     />
                     <div className="selfInfo">

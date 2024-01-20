@@ -21,7 +21,7 @@ import RecentMessage from "./RecentMessage";
 function Chat(props){
 
     let {
-        user
+        selectedFriend
     } = props
 
     const [profileIconClicked, setProfileIconClicked] = useState(false)
@@ -32,10 +32,10 @@ function Chat(props){
                 <div className="Friend highlight ">
                     <UserIcon 
                         isOnline={true}
-                        user={user}
+                        user={selectedFriend}
                     />
                     <div className="pDiv">
-                        <p>{user.displayName}</p>
+                        <p>{selectedFriend.displayName}</p>
                     </div>
                 </div>
                 <div className="ChattingIconsDiv">
@@ -91,7 +91,7 @@ function Chat(props){
                 </div>
                 
                 </div>
-                {profileIconClicked && <FriendProfile />}
+                {profileIconClicked && <FriendProfile user={selectedFriend} />}
                 
             </div>
             

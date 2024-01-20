@@ -1,13 +1,24 @@
 import React from "react";
+import { FaDiscord } from "react-icons/fa";
 
-function FriendProfile(){
+function FriendProfile(props){
+
+    let {
+        user
+    } = props
+
     return(
         <div className="FriendProfileDiv">
             <div>
-                <div className="FriendProfileImageDiv">
+                <div style={ { backgroundColor: (user.color) } } className="FriendProfileImageDiv">
                     <div>
                         <div className="imageAndStatus">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNOzfYPaLIvUyXadENQul27Z4R2Nuc2nuhDHHLbF8eATKEYN4SjdUoZIlWpkH9Ov4Mryc&usqp=CAU" />
+                            { user.photoURL ? 
+                            <img src= {user.photoURL} />
+                            :
+                            <div className="customUserIcon friendProfileUserIconDiv" style={{backgroundColor: user.color}}>
+                                <FaDiscord className="userIcon friendProfileIcon" color="white" />
+                            </div>}
                             <img className="online friendProfileStatus" src="https://i.postimg.cc/pXqvD8RN/online.png" />
                         </div>
                     </div>
@@ -16,12 +27,12 @@ function FriendProfile(){
 
                 <div className="FriendInfoDiv">
                     <div>
-                        <h4>Steve</h4>
-                        <p>Steve#1234</p>
+                        <h4>{user.displayName}</h4>
+                        <p>{user.userName}</p>
                     </div>
                     <div>
                         <h6>DISCORD MEMBER SINCE</h6>
-                        <p>January 5, 2024</p>
+                        <p>Feature not added yet</p>
                     </div>
                     <div className="NoteDiv">
                         <h6>Note</h6>

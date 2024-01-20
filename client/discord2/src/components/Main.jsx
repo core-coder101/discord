@@ -8,13 +8,18 @@ function Main(props){
     const [selectedFriend, setSelectedFriend] = useState('')
 
     let {
-        user
+        user,
+        friendsInfo
     } = props
 
     return(
         <div className="mainDiv">
-            <Friends user={user} setSelectedFriend={setSelectedFriend} />
-            {selectedFriend ? (<Chat user={user} />) : <EmptyScreen />}
+            <Friends 
+                user={user} 
+                setSelectedFriend={setSelectedFriend} 
+                friendsInfo={friendsInfo}
+            />
+            {selectedFriend ? (<Chat selectedFriend={selectedFriend} />) : <EmptyScreen />}
         </div>
     )
 }

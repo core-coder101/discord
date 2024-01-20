@@ -9,6 +9,8 @@ const cookieParser = require('cookie-parser')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const bcrypt = require('bcryptjs')
+const { rejects } = require('assert')
+const { resolve } = require('path')
 
 const db = mysql.createConnection({
     host: "localhost",
@@ -55,9 +57,9 @@ io.on("connection", (socket)=>{
         } else{}
         
         let hashedPassword = await bcrypt.hash(data.password, 8)
-        let colorsArray = ["aqua", "black", "blue", "fuchsia", "gray", "green", "lime", "maroon", "navy", "olive", 'purple', 'red', 'silver', 'teal', 'yellow']
+        let colorsArray = ["black", "blue", "fuchsia", "gray", "#3BA55C","maroon","olive",'#E44235', 'teal', '#FAA61A', '#E1721F', '#904FAD', '#757E8A']
         console.log(colorsArray.length);
-        let x = Math.floor(Math.random() * 14)
+        let x = Math.floor(Math.random() * 12)
         let color = colorsArray[x]
 
         data = {
@@ -133,7 +135,7 @@ io.on("connection", (socket)=>{
             console.log(err);
         }
     })
-    socket.on("requestData", async (data) => {
+    socket.on("requestUserData", async (data) => {
         try{
             let dbData = await new Promise((resolve,reject) => {
                 db.query("SELECT * FROM users WHERE email = ?", [data.email], (err,result) =>{
@@ -150,7 +152,53 @@ io.on("connection", (socket)=>{
                return;
             }
 
-            socket.emit("receiveData", dbData[0])
+            socket.emit("receiveUserData", dbData[0])
+
+        } catch(err){
+            console.log(err);
+        }
+    })
+    socket.on("requestFriendsData", async (data) => {
+        try{
+            let dbData = await new Promise((resolve, reject) => {
+                db.query("SELECT friendEmail FROM friends WHERE userEmail = ?", [data.email], (err,result) => {
+                    if(err){
+                        reject(err)
+                    } else{
+                        resolve(result)
+                    }
+                })
+            })
+            let friendsData = await new Promise(async (resolve,reject) => {
+                let tempArr = []
+                let columnsToGet = ["id","email", "displayName", "userName", "photoURL", "color", "status"]
+                
+                await Promise.all(dbData.map(async (data) =>{
+                    try{
+                        let friendData = await new Promise((resolve, reject) =>{
+                            db.query("SELECT ?? FROM users WHERE email = ?", [columnsToGet, data.friendEmail], (err, result) =>{
+                                if(err){
+                                    reject(err)
+                                } else{
+                                    resolve(result[0])
+                                }
+                            })
+                        })
+                        tempArr.push(friendData)
+                    } catch(err){
+                        reject(err)
+                    }
+                    
+
+                }))
+
+                resolve(tempArr);
+            })
+            
+
+            console.log('friends Data: ' , friendsData);
+            socket.emit("receiveFriendsData", friendsData)
+            
 
         } catch(err){
             console.log(err);

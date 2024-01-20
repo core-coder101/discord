@@ -9,7 +9,6 @@ import { FaDiscord } from "react-icons/fa";
 function UserIcon(props){
 
     let {
-        isOnline,
         user
     } = props
 
@@ -23,7 +22,7 @@ function UserIcon(props){
                     (<div className="customUserIcon" style={{backgroundColor: user.color}}>
                         <FaDiscord className="userIcon" color="white" />
                     </div>)}
-                    { isOnline ? <img className="online" src="https://i.postimg.cc/pXqvD8RN/online.png" /> : <img className="offline" src="https://i.postimg.cc/g2y6mgW9/offline.png" /> }
+                    { user.status == 'online' ? <img className="online" src="https://i.postimg.cc/pXqvD8RN/online.png" /> : <img className="offline" src="https://i.postimg.cc/g2y6mgW9/offline.png" /> }
                 </div>
             </div>
         </div>

@@ -18,17 +18,14 @@ function LoginOrRegister(props){
 
         cookies.set("token", token,)
         let decoded = jwtDecode(token)
-        setUser(decoded)
+        if(decoded){
+            socket.emit("requestUserData", decoded)
+            socket.emit("requestFriendsData", decoded)
+        }
     })
 
-    
-
-    function changeSelectedPage(page){
-        setSelectedPage(page)
-    }
-
     return(
-        selectedPage == 'login' ? <Login 
+        selectedPage === 'login' ? <Login 
             socket={socket}
             setUser={setUser}
             setSelectedPage={setSelectedPage} 

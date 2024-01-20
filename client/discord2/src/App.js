@@ -13,26 +13,47 @@ document.addEventListener('contextmenu',event => {
 
 function App() {
 
-  const cookies = new Cookies
+  const [user, setUser] = useState(null)
+  const [friendsInfo, setFriendsInfo] = useState(null)
+
+  const cookies = new Cookies()
   const socket = io.connect("http://localhost:5000")
 
   useEffect(() =>{
     let token = cookies.get('token')
     if(token){
       let decoded = jwtDecode(token)
-      socket.emit("requestData", decoded)
+      if(decoded){
+        socket.emit("requestUserData", decoded)
+        socket.emit("requestFriendsData", decoded)
+      }
+
     }
   }, [])  
 
-  socket.on('receiveData', (dbData)=>{
-    setUser(dbData)
+  socket.on('receiveUserData', (dbData)=>{
+    console.log(dbData);
+    setUser(dbData);
   })
-
-  const [user, setUser] = useState(null)
+  socket.on("receiveFriendsData", (data) => {
+    console.log(data);
+    setFriendsInfo(data);
+  })
 
   return (
     <div className="App">
-      { user ? <Main user={user} socket={socket} /> : <LoginOrRegister socket={socket} setUser={setUser} /> }
+      { user ? <Main 
+
+        user={user} 
+        socket={socket} 
+        friendsInfo={friendsInfo}
+      
+      /> : <LoginOrRegister 
+
+        socket={socket}
+        setUser={setUser}
+
+      /> }
     </div>
   );
 }
