@@ -26,10 +26,12 @@ function App() {
       if(decoded){
         socket.emit("requestUserData", decoded)
         socket.emit("requestFriendsData", decoded)
+        socket.emit("setStatus", decoded, "online")
       }
 
     }
-  }, [])  
+  }, [])
+
 
   socket.on('receiveUserData', (dbData)=>{
     console.log(dbData);
@@ -47,6 +49,7 @@ function App() {
         user={user} 
         socket={socket} 
         friendsInfo={friendsInfo}
+        setFriendsInfo={setFriendsInfo}
       
       /> : <LoginOrRegister 
 

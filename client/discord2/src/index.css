@@ -614,16 +614,17 @@ html{
   border: 2px solid black;
   border-radius: 50%;
 }
-.friendProfileStatus{
-  width: 20px !important;
-  height: 20px !important;
-}
 .offline{
   width: 15px !important;
   height: 15px !important;
   position: relative;
   right: 15px;
   border-radius: 50%;
+}
+.friendProfileStatus{
+  width: 20px !important;
+  height: 20px !important;
+  right: 25px;
 }
 .imageAndStatus{
   margin-left: 20px;

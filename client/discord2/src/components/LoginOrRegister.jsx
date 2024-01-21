@@ -21,6 +21,7 @@ function LoginOrRegister(props){
         if(decoded){
             socket.emit("requestUserData", decoded)
             socket.emit("requestFriendsData", decoded)
+            socket.emit("setStatus", decoded, "online")
         }
     })
 

@@ -1,13 +1,40 @@
 import React from "react";
 import UserIcon from "./UserIcon";
 
-function Message(){
+function Message(props){
+
+    let {
+        selectedFriend,
+        user,
+        message,
+        currentHours,
+        currentMinutes,
+        currentDate,
+    } = props
+
+    let timeUnit = "AM"
+    let timeMessage = ""
+    let [year,month,day] = currentDate.split("-")
+
+    if(user.email == message.senderEmail){
+        let sender = user
+        let receiver = selectedFriend
+    } else {
+        let sender = selectedFriend
+        let receiver = user
+    }
+
+    if(currentHours > 12){
+        timeUnit = "PM"
+        currentHours = currentHours - 12
+    }
+
     return(
         <div className="MessageMainDiv">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNOzfYPaLIvUyXadENQul27Z4R2Nuc2nuhDHHLbF8eATKEYN4SjdUoZIlWpkH9Ov4Mryc&usqp=CAU" />
             <div>
                 <div>
-                    <h6>Steve</h6>
+                    <h6>{sender.displayName}</h6>
                     <p className="time">Today at 11:35 PM</p>
                 </div>
                 <p className="messageBody">Contrary to popular belief, Lorem Ipsum is not simply random text.

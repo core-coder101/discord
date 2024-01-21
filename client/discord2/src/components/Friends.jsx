@@ -26,7 +26,8 @@ function Friends(props){
     let {
         user,
         setSelectedFriend,
-        friendsInfo
+        friendsInfo,
+        socket
     } = props
 
     // for scrollbar
@@ -141,14 +142,17 @@ function Friends(props){
                 <p>Direct Messages</p>
                 <IoMdAdd color="#949BA4" />
             </div>
-            {friendsInfo && friendsInfo.length > 0 && friendsInfo.map((friend, index) =>(
-                <Friend 
+            {friendsInfo && friendsInfo.length > 0 && friendsInfo.map((friend, index) =>{
+                
+                socket.emit("joinUserNameRoom", friend.userName)
+                
+                return <Friend 
                     key={index}
                     id={index}
                     friend={friend}
                     setSelectedFriend={setSelectedFriend}
                 />
-            ))}
+            })}
 
             <div className="selfStatus">
                 <div className="selfStatusInfoDiv">

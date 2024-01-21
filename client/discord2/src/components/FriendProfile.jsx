@@ -19,7 +19,8 @@ function FriendProfile(props){
                             <div className="customUserIcon friendProfileUserIconDiv" style={{backgroundColor: user.color}}>
                                 <FaDiscord className="userIcon friendProfileIcon" color="white" />
                             </div>}
-                            <img className="online friendProfileStatus" src="https://i.postimg.cc/pXqvD8RN/online.png" />
+                            {/* <img className="online friendProfileStatus" src="https://i.postimg.cc/pXqvD8RN/online.png" /> */}
+                            { user.status == 'online' ? <img className="online friendProfileStatus" src="https://i.postimg.cc/pXqvD8RN/online.png" /> : <img className="offline friendProfileStatus" src="https://i.postimg.cc/g2y6mgW9/offline.png" /> }
                         </div>
                     </div>
                 </div>

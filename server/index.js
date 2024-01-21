@@ -11,6 +11,7 @@ require('dotenv').config()
 const bcrypt = require('bcryptjs')
 const { rejects } = require('assert')
 const { resolve } = require('path')
+const { stat } = require('fs')
 
 const db = mysql.createConnection({
     host: "localhost",
@@ -33,9 +34,11 @@ const io = new Server(server, {
     }
 })
 
+
+
 io.on("connection", (socket)=>{
 
-
+    let userEmail
 
     socket.on("registerUser", async (data) => {
 
@@ -203,6 +206,53 @@ io.on("connection", (socket)=>{
         } catch(err){
             console.log(err);
         }
+    })
+    socket.on("joinUserNameRoom", (data)=>{
+        socket.join(data)
+    })
+    socket.on("setStatus", (data,status) => {
+
+        userEmail = data.email
+
+        db.query("UPDATE users SET status = ? WHERE email = ?", [status, data.email], (err) => {
+            if(err){
+                console.log(err);
+            } else{
+                console.log("status: ", status);
+                io.emit("friendStatusChange", userEmail, status)
+            }
+        })
+    })
+    socket.on("getMessages", async (selectedFriend, user) => {
+        try{
+            let messages = await new Promise((resolve,reject) => {
+                let query = "SELECT * FROM messages WHERE (senderEmail = ? AND receiverEmail = ?) OR (senderEmail = ? AND receiverEmail = ?) ORDER BY date DESC;"
+                db.query(query, [selectedFriend.email, user.email, user.email, selectedFriend.email],(err, result)=>{
+                    if(err){
+                        reject(err)
+                    } else{
+                        resolve(result)
+                    }
+                })
+            })
+            if(messages && messages.length > 0){
+                socket.emit("receiveMessages", messages)
+            }
+        } catch(err){
+            console.log(err);
+        }
+    })
+
+
+    socket.on("disconnect", () => {
+        db.query("UPDATE users SET status = ? WHERE email = ?", ["offline", userEmail], (err) => {
+            if(err){
+                console.log(err);
+            } else{
+                console.log("offline");
+                io.emit("friendStatusChange", userEmail,"offline")
+            }
+        })
     })
 })
 

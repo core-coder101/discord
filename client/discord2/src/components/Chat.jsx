@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FriendProfile from "./FriendProfile";
 import UserIcon from "./UserIcon";
 import { BiSolidPhoneCall } from "react-icons/bi";
@@ -21,10 +21,23 @@ import RecentMessage from "./RecentMessage";
 function Chat(props){
 
     let {
-        selectedFriend
+        selectedFriend,
+        socket,
+        user,
+        friendsInfo
     } = props
 
     const [profileIconClicked, setProfileIconClicked] = useState(false)
+    const [messages, setMessages] = useState([])
+
+    useEffect(() =>{
+        socket.emit("getMessages", selectedFriend, user)
+    }, [])
+
+    socket.on("receiveMessages", (data)=>{
+        console.log(data);
+        setMessages(data)
+    })
 
     return(
         <div className="mainChatDiv">
@@ -66,9 +79,32 @@ function Chat(props){
             <div className="ChatArea">
             <div className="OuterDiv">
             <div className="messagesDiv">
-                <RecentMessage />
+                {/* <RecentMessage />
                 <Message />
-                <DateSeperator />
+                <DateSeperator /> */}
+                {messages && messages.length > 0 && messages.map((message, index) => {
+                    if(!index == 0){
+                        let prevMessage = messages[index - 1]
+                        let [prevDate, prevTime] = prevMessage.date.split("T")
+                        let [currentDate, currentTime] = message.date.split("T")
+                        let [prevHours,prevMinutes, prevSeconds] = prevTime.split(":")
+                        let [currentHours,currentMinutes, currentSeconds] = currentTime.split(":")
+                        if(!(prevDate == currentDate)){
+                            <DateSeperator currentDate />
+                        }
+                        if(message.senderEmail == prevMessage.senderEmail && prevDate == currentDate && prevHours == currentHours && parseInt(currentMinutes) - parseInt(prevMinutes) < 2 && parseInt(currentSeconds) - parseInt(prevSeconds) < 31){
+                            console.log("true")
+                            return <RecentMessage selectedFriend={selectedFriend} user={user} message={message} />
+                        }
+                    }
+                    return <Message 
+                    selectedFriend={selectedFriend} 
+                    user={user} 
+                    message={message}
+                    currentDate={currentDate}
+                    currentHours={currentHours}
+                    currentMinutes={currentMinutes} />
+                })}
 
             </div>
                 <div className="MessageInputDiv">
