@@ -27,7 +27,9 @@ function Friends(props){
         user,
         setSelectedFriend,
         friendsInfo,
-        socket
+        socket,
+        setMessages,
+        handleReset,
     } = props
 
     // for scrollbar
@@ -151,6 +153,8 @@ function Friends(props){
                     id={index}
                     friend={friend}
                     setSelectedFriend={setSelectedFriend}
+                    setMessages={setMessages}
+                    handleReset={handleReset}
                 />
             })}
 

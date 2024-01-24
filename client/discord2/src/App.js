@@ -19,6 +19,17 @@ function App() {
   const cookies = new Cookies()
   const socket = io.connect("http://localhost:5000")
 
+  function backupConnection(){
+    const socket = io.connect("https://gttlsr4m-5000.euw.devtunnels.ms");
+  }
+
+  socket.on("connect_error", (err)=>{
+    console.log(err);
+
+    socket.disconnect()
+    backupConnection()
+  })
+
   useEffect(() =>{
     let token = cookies.get('token')
     if(token){

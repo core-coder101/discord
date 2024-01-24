@@ -12,6 +12,7 @@ const bcrypt = require('bcryptjs')
 const { rejects } = require('assert')
 const { resolve } = require('path')
 const { stat } = require('fs')
+const { send } = require('process')
 
 const db = mysql.createConnection({
     host: "localhost",
@@ -225,9 +226,11 @@ io.on("connection", (socket)=>{
     })
     socket.on("getMessages", async (selectedFriend, user) => {
         try{
+            const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            console.log(userTimeZone);
             let messages = await new Promise((resolve,reject) => {
-                let query = "SELECT * FROM messages WHERE (senderEmail = ? AND receiverEmail = ?) OR (senderEmail = ? AND receiverEmail = ?) ORDER BY date DESC;"
-                db.query(query, [selectedFriend.email, user.email, user.email, selectedFriend.email],(err, result)=>{
+                let query = "SELECT *, CONVERT_TZ(date, 'UTC', ?) AS localDate FROM messages WHERE (senderEmail = ? AND receiverEmail = ?) OR (senderEmail = ? AND receiverEmail = ?) ORDER BY date DESC;"
+                db.query(query, [userTimeZone, selectedFriend.email, user.email, user.email, selectedFriend.email],(err, result)=>{
                     if(err){
                         reject(err)
                     } else{
@@ -242,7 +245,50 @@ io.on("connection", (socket)=>{
             console.log(err);
         }
     })
+    socket.on("sendMessage", async (message, sender, receiver) => {
+        try {
+            // console.log("message: ", message);
+            // console.log("sender: ", sender);
+            // console.log("receiver: ", receiver);
 
+            let date = new Date()
+
+            const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            console.log(userTimeZone);
+
+            console.log("date: ", date);
+
+            // let dataToAdd = {
+            //     senderEmail: sender.email,
+            //     receiverEmail: receiver.email,
+            //     message: message,
+            //     date: date
+            // }
+
+            const localDate = new Date(date.toLocaleString("en-US", { timeZone: userTimeZone }));
+
+            let dataToSend = {
+                senderEmail: sender.email,
+                receiverEmail: receiver.email,
+                message: message,
+                date: date.toISOString(),
+                localDate: localDate,
+                }
+            let query = "INSERT INTO messages SET ?"
+
+            await db.query(query, dataToSend, (err) => {
+                if(err){
+                    console.log(err);
+                } else {
+                    io.emit(receiver.email, dataToSend)
+                    io.emit(sender.email, dataToSend)
+                }
+            })
+
+        } catch(err){
+            console.log(err);
+        }
+    })
 
     socket.on("disconnect", () => {
         db.query("UPDATE users SET status = ? WHERE email = ?", ["offline", userEmail], (err) => {

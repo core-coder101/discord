@@ -512,10 +512,31 @@ html{
   margin: 0;
   margin-right: 10px;
 }
+.MessageMainDiv .imageAndStatus{
+  margin: 0;
+}
+.MessageMainDiv .customUserIcon{
+  width: 45px;
+  height: 45px;
+}
+.MessageMainDiv .customUserIcon .userIcon{
+  width: 25px;
+  height: 25px;
+}
+.MessageMainDiv .imageAndStatus img {
+  display: none;
+}
+.MessageMainDiv .statusContainerDiv{
+  display: flex;
+  align-items: center;
+}
 .messageBody{
   margin: 0;
   font-size: medium;
   color: #DBDEE1;
+}
+.recentMsgBody{
+  margin-left: 7px !important;
 }
 .time{
   margin: 0;
@@ -554,7 +575,7 @@ html{
 .recentMessageTime{
   width: max-content;
   font-size: x-small;
-  margin: 5px 8px 0 2px;
+  margin: 5px 21px 0 2px;
 }
 .recentMessageTimeDiv{
   margin: 0 !important;

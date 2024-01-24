@@ -6,6 +6,7 @@ import EmptyScreen from "./EmptyScreen"
 function Main(props){
 
     const [selectedFriend, setSelectedFriend] = useState('')
+    const [messages, setMessages] = useState([])
 
     let {
         user,
@@ -42,6 +43,11 @@ function Main(props){
         })
     }})
 
+    const [resetKey, setResetKey] = useState(0)
+
+    function handleReset(){
+        setResetKey(prev => prev + 1)
+    }
     
 
     return(
@@ -51,12 +57,17 @@ function Main(props){
                 setSelectedFriend={setSelectedFriend} 
                 friendsInfo={friendsInfo}
                 socket={socket}
+                setMessages={setMessages}
+                handleReset={handleReset}
             />
             {selectedFriend ? (<Chat 
                 user={user}
                 selectedFriend={selectedFriend}
                 friendsInfo={friendsInfo}
                 socket={socket}
+                messages={messages}
+                setMessages={setMessages}
+                key={resetKey}
             />) : <EmptyScreen />}
         </div>
     )
