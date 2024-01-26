@@ -17,6 +17,9 @@ function RecentMessage(props){
         timeUnit = "PM"
         currentHours = parseInt(currentHours) - 12
     }
+    if(parseInt(currentMinutes) < 10){
+        currentMinutes = '0' + currentMinutes.toString()
+    }
 
     timeMessage = currentHours + ":" + currentMinutes + " " + timeUnit
 

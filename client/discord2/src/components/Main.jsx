@@ -54,7 +54,8 @@ function Main(props){
         <div className="mainDiv">
             <Friends 
                 user={user} 
-                setSelectedFriend={setSelectedFriend} 
+                setSelectedFriend={setSelectedFriend}
+                selectedFriend={selectedFriend}
                 friendsInfo={friendsInfo}
                 socket={socket}
                 setMessages={setMessages}
@@ -64,6 +65,7 @@ function Main(props){
                 user={user}
                 selectedFriend={selectedFriend}
                 friendsInfo={friendsInfo}
+                setFriendsInfo={setFriendsInfo}
                 socket={socket}
                 messages={messages}
                 setMessages={setMessages}

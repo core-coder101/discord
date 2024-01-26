@@ -17,10 +17,12 @@ function App() {
   const [friendsInfo, setFriendsInfo] = useState(null)
 
   const cookies = new Cookies()
-  const socket = io.connect("http://localhost:5000")
+  let socket;
+  socket = io.connect("http://localhost:5000/")
 
   function backupConnection(){
-    const socket = io.connect("https://gttlsr4m-5000.euw.devtunnels.ms");
+    console.log("backupConnection Called");
+    socket = io.connect("ws://gttlsr4m-5000.euw.devtunnels.ms/");
   }
 
   socket.on("connect_error", (err)=>{

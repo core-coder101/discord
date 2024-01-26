@@ -8,13 +8,19 @@ function Friend(props){
         friend,
         setMessages,
         handleReset,
+        selectedFriend
     } = props
+
+    let highlight = ""
+    if(friend.email == selectedFriend.email){
+        highlight = "FriendHighlight"
+    }
 
     return(
         <div onClick={()=>{
             setSelectedFriend(friend)
             handleReset()
-        }} className="Friend">
+        }} className={"Friend " + highlight}>
             <UserIcon user={friend} />
             <p>{friend.displayName}</p>
         </div>

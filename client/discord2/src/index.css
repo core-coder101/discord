@@ -209,6 +209,12 @@ html{
   color: #949BA4;
   padding: 5px;
   border-radius: 0.35rem;
+  margin-bottom: 2px;
+}
+.FriendHighlight{
+  color: white;
+  background-color: #3F4248;
+  cursor: pointer;
 }
 .friendsMainDiv .Friend .imageAndStatus{
   margin: 0;

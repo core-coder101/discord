@@ -9,10 +9,6 @@ const cookieParser = require('cookie-parser')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const bcrypt = require('bcryptjs')
-const { rejects } = require('assert')
-const { resolve } = require('path')
-const { stat } = require('fs')
-const { send } = require('process')
 
 const db = mysql.createConnection({
     host: "localhost",
@@ -30,11 +26,11 @@ app.use(cookieParser())
 
 const io = new Server(server, {
     cors: {
-        origin: 'http://localhost:3000',
+        origin: "*",
+        setAllowedOrigins: "*",
         methods: ["GET", "POST"]
     }
 })
-
 
 
 io.on("connection", (socket)=>{
@@ -165,7 +161,7 @@ io.on("connection", (socket)=>{
     socket.on("requestFriendsData", async (data) => {
         try{
             let dbData = await new Promise((resolve, reject) => {
-                db.query("SELECT friendEmail FROM friends WHERE userEmail = ?", [data.email], (err,result) => {
+                db.query("SELECT friendEmail FROM friends WHERE userEmail = ? ORDER BY lastMessageDate DESC;", [data.email], (err,result) => {
                     if(err){
                         reject(err)
                     } else{
@@ -176,7 +172,7 @@ io.on("connection", (socket)=>{
             let friendsData = await new Promise(async (resolve,reject) => {
                 let tempArr = []
                 let columnsToGet = ["id","email", "displayName", "userName", "photoURL", "color", "status"]
-                
+                console.log("dbData", dbData);
                 await Promise.all(dbData.map(async (data) =>{
                     try{
                         let friendData = await new Promise((resolve, reject) =>{
@@ -208,9 +204,6 @@ io.on("connection", (socket)=>{
             console.log(err);
         }
     })
-    socket.on("joinUserNameRoom", (data)=>{
-        socket.join(data)
-    })
     socket.on("setStatus", (data,status) => {
 
         userEmail = data.email
@@ -227,10 +220,9 @@ io.on("connection", (socket)=>{
     socket.on("getMessages", async (selectedFriend, user) => {
         try{
             const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            console.log(userTimeZone);
             let messages = await new Promise((resolve,reject) => {
-                let query = "SELECT *, CONVERT_TZ(date, 'UTC', ?) AS localDate FROM messages WHERE (senderEmail = ? AND receiverEmail = ?) OR (senderEmail = ? AND receiverEmail = ?) ORDER BY date DESC;"
-                db.query(query, [userTimeZone, selectedFriend.email, user.email, user.email, selectedFriend.email],(err, result)=>{
+                let query = "SELECT * FROM messages WHERE (senderEmail = ? AND receiverEmail = ?) OR (senderEmail = ? AND receiverEmail = ?) ORDER BY date DESC;"
+                db.query(query, [selectedFriend.email, user.email, user.email, selectedFriend.email],(err, result)=>{
                     if(err){
                         reject(err)
                     } else{
@@ -254,7 +246,6 @@ io.on("connection", (socket)=>{
             let date = new Date()
 
             const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            console.log(userTimeZone);
 
             console.log("date: ", date);
 
@@ -265,17 +256,20 @@ io.on("connection", (socket)=>{
             //     date: date
             // }
 
-            const localDate = new Date(date.toLocaleString("en-US", { timeZone: userTimeZone }));
+            // const localDate = new Date(date.toLocaleString("en-US", { timeZone: userTimeZone }));
 
             let dataToSend = {
                 senderEmail: sender.email,
                 receiverEmail: receiver.email,
                 message: message,
-                date: date.toISOString(),
-                localDate: localDate,
+                date: date,
                 }
             let query = "INSERT INTO messages SET ?"
 
+            // await db.query("UPDATE friends WHERE userEmail = ? OR userEmail = ? SET lastMessageDate = ?", [dataToSend.senderEmail, dataToSend.receiverEmail, dataToSend.date])
+            console.log(dataToSend.date);
+            await db.query("UPDATE friends SET lastMessageDate = ? WHERE userEmail = ? AND friendEmail = ?", [dataToSend.date, dataToSend.senderEmail, dataToSend.receiverEmail]);
+            await db.query("UPDATE friends SET lastMessageDate = ? WHERE friendEmail = ? AND userEmail = ?", [dataToSend.date, dataToSend.senderEmail, dataToSend.receiverEmail]);
             await db.query(query, dataToSend, (err) => {
                 if(err){
                     console.log(err);

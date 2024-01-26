@@ -30,17 +30,20 @@ function Message(props){
         sender = selectedFriend
         receiver = user
     }
-    
+
     if(parseInt(currentHours) > 12){
         timeUnit = "PM"
         currentHours = parseInt(currentHours) - 12
+    }
+    if(currentMinutes < 10){
+        currentMinutes = ("0" + currentMinutes.toString())
     }
     if(day == today){
         timeMessage = "Today at " + currentHours + ":" + currentMinutes+" " + timeUnit
     } else if(day == today - 1){
         timeMessage = "Yesterday at " + currentHours+ ":" + currentMinutes+" " + timeUnit
     } else {
-        timeMessage = day + "/" + month + "/" + year + " " + currentHours + ":" + currentMinutes + " " + timeUnit
+        timeMessage = day + "/" + (month + 1) + "/" + year + " " + currentHours + ":" + currentMinutes + " " + timeUnit
     }
 
     return(

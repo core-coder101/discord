@@ -30,6 +30,7 @@ function Friends(props){
         socket,
         setMessages,
         handleReset,
+        selectedFriend,
     } = props
 
     // for scrollbar
@@ -146,8 +147,6 @@ function Friends(props){
             </div>
             {friendsInfo && friendsInfo.length > 0 && friendsInfo.map((friend, index) =>{
                 
-                socket.emit("joinUserNameRoom", friend.userName)
-                
                 return <Friend 
                     key={index}
                     id={index}
@@ -155,6 +154,7 @@ function Friends(props){
                     setSelectedFriend={setSelectedFriend}
                     setMessages={setMessages}
                     handleReset={handleReset}
+                    selectedFriend={selectedFriend}
                 />
             })}
 

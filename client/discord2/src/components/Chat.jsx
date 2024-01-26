@@ -25,6 +25,7 @@ function Chat(props){
         socket,
         user,
         friendsInfo,
+        setFriendsInfo,
         messages,
         setMessages,
     } = props
@@ -110,6 +111,24 @@ function Chat(props){
                 ]
             }
         })
+
+        setFriendsInfo((prev) => {
+             let filteredFriend = prev.filter((friend) => {
+                return ( (friend.email == messageData.senderEmail) || (friend.email == messageData.receiverEmail))
+            })
+            console.log("filteredFriend: ", filteredFriend);
+            let filteredArray = prev.filter((friend) => {
+                return !( (friend.email == messageData.senderEmail) || (friend.email == messageData.receiverEmail))
+            })
+            console.log("filteredArray: ", filteredArray);
+            let finalArray = [
+                ...filteredFriend,
+                ...filteredArray,
+            ]
+            console.log("Updating friendsInfo: ", finalArray);
+            return finalArray
+        })
+
     })
 
     function handleKeyDown(e){
