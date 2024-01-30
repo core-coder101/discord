@@ -216,6 +216,10 @@ html{
   background-color: #3F4248;
   cursor: pointer;
 }
+.unReadHighlight{
+  color: white;
+  font-weight: 450;
+}
 .friendsMainDiv .Friend .imageAndStatus{
   margin: 0;
 }
@@ -402,9 +406,6 @@ html{
   height: 25px;
   margin-right: 15px;
 }
-.ChattingIcons:hover{
-  cursor: pointer;
-}
 .ChattingIconsDiv input{
   background-color: #1E1F22;
   border: 0;
@@ -541,9 +542,9 @@ html{
   font-size: medium;
   color: #DBDEE1;
 }
-.recentMsgBody{
+/* .recentMsgBody{
   margin-left: 7px !important;
-}
+} */
 .time{
   margin: 0;
   font-size: small;
@@ -646,12 +647,14 @@ html{
   height: 15px !important;
   position: relative;
   right: 15px;
+  border: 2px solid black;
   border-radius: 50%;
 }
 .friendProfileStatus{
   width: 20px !important;
   height: 20px !important;
   right: 25px;
+  border: 3px solid black;
 }
 .imageAndStatus{
   margin-left: 20px;
@@ -866,10 +869,91 @@ html{
   margin: 0;
 }
 
-/* ------------------------------- EmptyScreen.jsx ------------------------------- */
+/* ------------------------------- FriendsScreen.jsx ------------------------------- */
 
-.EmptyScreenDiv{
+.FriendsScreenDiv{
   width: 100%;
   height: 100%;
   background-color: #313338;
 }
+.Friends{
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}
+.Friends > h6{
+  margin: 0;
+  color: white;
+}
+.seperator{
+  margin-left: 10px;
+  height: 50%;
+  width: 1px;
+  background-color: #3E4047;
+}
+.FriendsScreenButton{
+  margin: 0 !important;
+}
+.FriendsButtonDiv{
+  height: 50%;
+  width: max-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 13px;
+  border-radius: 0.25rem;
+  margin-left: 10px;
+}
+.FriendsButtonDiv:hover{
+  cursor: pointer;
+  background-color: #393C41;
+}
+.FriendsButtonDivHIGHLIGHTED{
+  background-color: #42444A;
+}
+.addFriendDiv{
+  background-color: #248046;
+  padding: 5px 10px 5px 10px;
+  border-radius: 0.25rem;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+}
+.addFriendDiv:hover{
+  cursor: pointer;
+}
+.addFriendDiv > h6 {
+  margin: 0;
+  color: white;
+  font-weight: 400;
+}
+/* ------------------------------- UnRead.jsx ------------------------------- */
+.unReadCounter{
+  background-color: red;
+  width: 23px;
+  height: 23px;
+  margin: 0;
+  position: relative;
+  right: 18px;
+  border-radius: 50%;
+  border: 3px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.UnReadOuterDiv{
+  display: flex;
+  align-items: flex-end;
+  justify-content: left;
+}
+.iconOutsideDiv {
+  width: 50px;
+}
+.Counter{
+  color: white;
+  margin: 0;
+  text-align: center;
+}
+

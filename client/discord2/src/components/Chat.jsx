@@ -3,7 +3,7 @@ import FriendProfile from "./FriendProfile";
 import UserIcon from "./UserIcon";
 import { BiSolidPhoneCall } from "react-icons/bi";
 import { FaVideo } from "react-icons/fa";
-import { BsFillPinAngleFill } from "react-icons/bs";
+import { BsAlphabet, BsFillPinAngleFill } from "react-icons/bs";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { IoPersonCircle } from "react-icons/io5";
 import { RiInbox2Fill } from "react-icons/ri";
@@ -28,108 +28,42 @@ function Chat(props){
         setFriendsInfo,
         messages,
         setMessages,
+        convertIntoTimeZone,
+        userTimeZone,
     } = props
 
     const [profileIconClicked, setProfileIconClicked] = useState(false)
     const [messageInput, setMessageInput] = useState("")
+    const [emojiToggle, setEmojiToggle] = useState(false)
 
     useEffect(() =>{
         socket.emit("getMessages", selectedFriend, user)
+        document.getElementById('messageTextArea').focus()
     }, [])
 
-    let userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    useEffect(()=>{
+        function handleKeyPress(event){
+            document.getElementById('messageTextArea').focus()
+        }
 
-    function convertIntoTimeZone(utcDateString){
-        let utcDate = new Date(utcDateString)
-        let timeZoneDate = new Date(utcDate.toLocaleString("en-us", { timeZone: userTimeZone }))
-        return timeZoneDate;
-    }
+        document.addEventListener("keypress", handleKeyPress)
+        
+
+        return () => {
+            document.removeEventListener("keypress", handleKeyPress)
+        }
+    }, [])
 
     socket.on("receiveMessages", (data)=>{
-        console.log("receiveMessages", data);
         const formattedMessages = data.map((message) => {
             const formattedMessage = { ...message }
             formattedMessage.date = convertIntoTimeZone(message.date)
             return formattedMessage
         })
-        console.log("formattedMessages", formattedMessages);
         setMessages(formattedMessages)
     })
 
-
-
-    // socket.on(user.email, (messageData) => {
-    //     console.log(messages);
-    //     if(messages && (messages.length > 0) && !(messageData.date == messages[0].date)){
-    //         console.log("messageData.date: ", messageData.date);
-    //         console.log("messages[0].date: ",messages[0].date);
-    //         setMessages((prevValue) => {
-    //             return [
-    //                 messageData,
-    //                 ...prevValue,
-    //             ]
-    //         })
-    //     } else{
-    //         return;
-    //     }
-    // })
-
-    // const [lastMSG, setLastMSG] = useState({})
-
-    // useEffect(()=>{
-    //     if(messages && (messages.length > 0) && !(lastMSG == messages[0])){
-    //         console.log("inside if");
-    //         setMessages((prevValue) => (
-    //             {
-    //                 lastMSG,
-    //                 ...prevValue,
-    //             }
-    //         ))
-    //         return;
-    //     } else{
-    //         return;
-    //     }
-    // }, [lastMSG, messages])
-
-    socket.on(user.email, (messageData) => {
-        console.log(messageData);
-        if(!(messageData.senderEmail == user.email) && !(messageData.senderEmail == selectedFriend.email)){
-            return;
-        }
-        let messageDate = convertIntoTimeZone(messageData.date)
-        setMessages(prev => {
-            if(prev && (prev.length > 0) && (prev[0].date.toLocaleString() == messageDate.toLocaleString())){
-                return prev;
-            } else {
-
-                let formattedMessageData = { ...messageData }
-                formattedMessageData.date = convertIntoTimeZone(formattedMessageData.date)
-
-                return [
-                    formattedMessageData,
-                    ...prev,
-                ]
-            }
-        })
-
-        setFriendsInfo((prev) => {
-             let filteredFriend = prev.filter((friend) => {
-                return ( (friend.email == messageData.senderEmail) || (friend.email == messageData.receiverEmail))
-            })
-            console.log("filteredFriend: ", filteredFriend);
-            let filteredArray = prev.filter((friend) => {
-                return !( (friend.email == messageData.senderEmail) || (friend.email == messageData.receiverEmail))
-            })
-            console.log("filteredArray: ", filteredArray);
-            let finalArray = [
-                ...filteredFriend,
-                ...filteredArray,
-            ]
-            console.log("Updating friendsInfo: ", finalArray);
-            return finalArray
-        })
-
-    })
+    
 
     function handleKeyDown(e){
         if(e.key === "Enter" && e.shiftKey){
@@ -137,8 +71,18 @@ function Chat(props){
         }
         if(e.key === "Enter" && !e.shiftKey){
             e.preventDefault()
+            if(messageInput == ""){
+                return;
+            }
+            let lettersAndNumbersExpression = /^[A-Za-z0-9]*$/
+            let specialSymbolsExpression = /[!@#$%^&*(),.?":{}|<>]/
+            let allowedCharactersExpression = /^[\x20-\x7E]*$/;
+            if(!allowedCharactersExpression.test(messageInput)){
+                return;
+            } else {
             socket.emit("sendMessage", messageInput, user, selectedFriend)
             setMessageInput("")
+            }
         }
     }
 
@@ -189,12 +133,10 @@ function Chat(props){
                     if(!(index == messages.length - 1)){
                         let prevMessage = messages[index + 1]
                         let prevDate = prevMessage.date.getDate()
-                        let prevTime = prevMessage.date.getTime()
                         let prevHours = prevMessage.date.getHours()
                         let prevMinutes = prevMessage.date.getMinutes()
                         let prevSeconds = prevMessage.date.getSeconds()
                         let currentDate = message.date.getDate()
-                        let currentTime = message.date.getTime()
                         let currentHours = message.date.getHours()
                         let currentMinutes = message.date.getMinutes()
                         let currentSeconds = message.date.getSeconds()
@@ -225,12 +167,9 @@ function Chat(props){
                                 currentDate={message.date}
                                 currentHours={currentHours}
                                 currentMinutes={currentMinutes} />
-                    } else {
-                        let currentDate = message.date.getDate()
-                        let currentTime = message.date.getTime()                        
+                    } else {                  
                         let currentHours = message.date.getHours()
                         let currentMinutes = message.date.getMinutes()
-                        let currentSeconds = message.date.getSeconds()
                         return <Message 
                                 key={index}
                                 id={index}
@@ -250,7 +189,7 @@ function Chat(props){
                     <div>
                         <IoMdAddCircle className="ChattingIcons mx-1" color="white" />
                     </div>
-                    <textarea 
+                    <textarea id = "messageTextArea"
                         value={messageInput}
                         onKeyDown={handleKeyDown}
                         placeholder={"Message @" + selectedFriend.displayName}
@@ -265,7 +204,7 @@ function Chat(props){
                     <div>
                         <LuSticker className="ChattingIcons" color="white" />
                     </div>
-                    <div>
+                    <div onClick={()=>{setEmojiToggle(prev => !prev)}}>
                         <FaSmile className="ChattingIcons" color="white" />
                     </div>
                 </div>

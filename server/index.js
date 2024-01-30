@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const bcrypt = require('bcryptjs')
+const { resolve } = require('path')
 
 const db = mysql.createConnection({
     host: "localhost",
@@ -161,7 +162,7 @@ io.on("connection", (socket)=>{
     socket.on("requestFriendsData", async (data) => {
         try{
             let dbData = await new Promise((resolve, reject) => {
-                db.query("SELECT friendEmail FROM friends WHERE userEmail = ? ORDER BY lastMessageDate DESC;", [data.email], (err,result) => {
+                db.query("SELECT * FROM friends WHERE userEmail = ? ORDER BY lastMessageDate DESC;", [data.email], (err,result) => {
                     if(err){
                         reject(err)
                     } else{
@@ -171,7 +172,7 @@ io.on("connection", (socket)=>{
             })
             let friendsData = await new Promise(async (resolve,reject) => {
                 let tempArr = []
-                let columnsToGet = ["id","email", "displayName", "userName", "photoURL", "color", "status"]
+                let columnsToGet = ["id","email", "displayName", "userName", "photoURL", "color", "status",]
                 console.log("dbData", dbData);
                 await Promise.all(dbData.map(async (data) =>{
                     try{
@@ -184,7 +185,7 @@ io.on("connection", (socket)=>{
                                 }
                             })
                         })
-                        tempArr.push(friendData)
+                        tempArr.push({...friendData, unRead: data.unRead})
                     } catch(err){
                         reject(err)
                     }
@@ -237,6 +238,9 @@ io.on("connection", (socket)=>{
             console.log(err);
         }
     })
+    socket.on("markAsUnRead", (friendEmail, userEmail) => {
+        db.query("UPDATE friends SET unRead = unRead + 1 WHERE (userEmail = ? AND friendEmail = ?)", [userEmail, friendEmail])
+    })
     socket.on("sendMessage", async (message, sender, receiver) => {
         try {
             // console.log("message: ", message);
@@ -276,6 +280,7 @@ io.on("connection", (socket)=>{
                 } else {
                     io.emit(receiver.email, dataToSend)
                     io.emit(sender.email, dataToSend)
+                    socket.emit("markAsUnRead", dataToSend.receiverEmail, dataToSend.senderEmail)
                 }
             })
 
@@ -283,6 +288,12 @@ io.on("connection", (socket)=>{
             console.log(err);
         }
     })
+    socket.on("markAsRead", (friendEmail, userEmail) => {
+        db.query("UPDATE friends SET unRead = 0 WHERE (userEmail = ? AND friendEmail = ?)", [userEmail, friendEmail])
+    })
+    
+
+
 
     socket.on("disconnect", () => {
         db.query("UPDATE users SET status = ? WHERE email = ?", ["offline", userEmail], (err) => {

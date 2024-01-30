@@ -14,6 +14,7 @@ import { FaMicrophone } from "react-icons/fa";
 import { FaMicrophoneSlash } from "react-icons/fa";
 import { FaHeadphones } from "react-icons/fa6";
 import { FaGear } from "react-icons/fa6";
+import UnRead from "./UnRead";
 
 
 
@@ -31,6 +32,7 @@ function Friends(props){
         setMessages,
         handleReset,
         selectedFriend,
+        setFriendsInfo,
     } = props
 
     // for scrollbar
@@ -45,8 +47,22 @@ function Friends(props){
                 </div>
                 <div className="directMessagesIconDiv">
                     <FaDiscord className="directMessagesIcon" color="white" />
-                </div>           
+                </div>    
             </div>
+
+            {friendsInfo && friendsInfo.length > 0 && friendsInfo.map((friend)=>{
+                if(!friend.unRead){
+                    return;
+                }
+                return <UnRead 
+                    setSelectedFriend={setSelectedFriend}
+                    friend={friend} 
+                    setFriendsInfo={setFriendsInfo}
+                    socket={socket}
+                    user={user}
+                    />
+            })}
+            
             <div>
                 <div className="iconSeperator">   
                 </div>
@@ -155,6 +171,9 @@ function Friends(props){
                     setMessages={setMessages}
                     handleReset={handleReset}
                     selectedFriend={selectedFriend}
+                    setFriendsInfo={setFriendsInfo}
+                    socket={socket}
+                    user={user}
                 />
             })}
 
