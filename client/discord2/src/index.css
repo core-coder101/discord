@@ -416,6 +416,9 @@ html{
   min-width: 100px;
   outline: none;
 }
+.ChattingIconsDiv > div:hover{
+  cursor: pointer;
+}
 
 
 
@@ -651,9 +654,9 @@ html{
   border-radius: 50%;
 }
 .friendProfileStatus{
-  width: 20px !important;
-  height: 20px !important;
-  right: 25px;
+  width: 25px !important;
+  height: 25px !important;
+  right: 27px;
   border: 3px solid black;
 }
 .imageAndStatus{
@@ -664,7 +667,7 @@ html{
 }
 .FriendInfoDiv{
   width: 90%;
-  height: 25%;
+  height: 35%;
   background-color: #111214;
   margin-top: 70px;
   border-radius: 0.5rem;
@@ -712,6 +715,7 @@ html{
 .friendProfileUserIconDiv{
   width: 80px;
   height: 80px;
+  margin-left: 5px;
 }
 .friendProfileIcon{
   width: 40px;
@@ -885,11 +889,19 @@ html{
   margin: 0;
   color: white;
 }
+.seperatorDiv{
+  height: 50%;
+  width: 10px;
+}
 .seperator{
   margin-left: 10px;
-  height: 50%;
+  height: 100%;
   width: 1px;
   background-color: #3E4047;
+}
+.rightSeperator{
+  margin: 0;
+  margin-right: 10px;
 }
 .FriendsScreenButton{
   margin: 0 !important;
@@ -903,16 +915,41 @@ html{
   padding: 13px;
   border-radius: 0.25rem;
   margin-left: 10px;
+  color: #949BA4;
 }
 .FriendsButtonDiv:hover{
   cursor: pointer;
   background-color: #393C41;
+  color: #DBDEE1;
 }
 .FriendsButtonDivHIGHLIGHTED{
   background-color: #42444A;
+  color: white;
 }
-.addFriendDiv{
+.FriendsScreenFixedTopSection{
+  display: flex;
+  box-shadow: #1E1F22 0px 1px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 45px;
+  width: 100%;
+  background-color: #313338;
+}
+.FriendsScreenIconsDiv{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.RightIconsDiv{
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+.addFriendButtonDiv{
   background-color: #248046;
+  min-width: max-content;
   padding: 5px 10px 5px 10px;
   border-radius: 0.25rem;
   height: 50%;
@@ -921,10 +958,10 @@ html{
   align-items: center;
   margin-left: 10px;
 }
-.addFriendDiv:hover{
+.addFriendButtonDiv:hover{
   cursor: pointer;
 }
-.addFriendDiv > h6 {
+.addFriendButtonDiv > h6 {
   margin: 0;
   color: white;
   font-weight: 400;
@@ -956,4 +993,16 @@ html{
   margin: 0;
   text-align: center;
 }
-
+/* ------------------------------- AddFriend.jsx ------------------------------- */
+.AddFriendMainDiv{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+.AddFriendDiv{
+  height: 100%;
+  width: 70%;
+  
+}

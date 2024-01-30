@@ -25,7 +25,7 @@ function Friend(props){
 
     return(
         <div onClick={async ()=>{
-            await handleReset()
+            handleReset()
             setSelectedFriend(friend)
             setFriendsInfo((prev) => {
                 return prev.map((entry) => {

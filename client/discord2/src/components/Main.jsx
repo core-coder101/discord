@@ -78,12 +78,10 @@ function Main(props){
             // so we FIRST CHECK IF ITS A REPETITIVE MESSAGE THEN show a notif on the friend icon
             setPrevMessage((prev) => {
                 if(prev && prev.date == messageData.date){
-                    console.log("TRUE");
                     return prev;
                 }
                 console.log(filteredFriendArray);
                 let [senderFriend] = filteredFriendArray
-                console.log("senderFriend: ", senderFriend);
                 // socket.emit("markAsUnRead", senderFriend.email, user.email)
                 setFriendsInfo((prev) => {
                     return prev.map((entry)=>{

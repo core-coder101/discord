@@ -1,16 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 function FriendsScreenButton(props){
     let {
         text,
+        selectedButton,
+        setSelectedButton,
     } = props
 
-    const [color, setColor] = useState("#949BA4")
+    const [customClass, setCustomClass] = useState("")
+
+    useEffect(()=>{
+        if(selectedButton === text){
+            setCustomClass("FriendsButtonDivHIGHLIGHTED")
+        } else {
+            setCustomClass("")
+        }
+    }, [selectedButton, text])
 
     return (
-        <div onMouseEnter={()=>setColor("#DBDEE1")} onMouseLeave={()=>setColor("#949BA4")} className="FriendsButtonDiv">
+        <div onClick={()=>{setSelectedButton(text)}} className={"FriendsButtonDiv " + customClass}>
             <div>
-                <h6 style={{color: color}} className="FriendsScreenButton">{text}</h6>
+                <h6 className="FriendsScreenButton">{text}</h6>
             </div>
         </div>
     )
