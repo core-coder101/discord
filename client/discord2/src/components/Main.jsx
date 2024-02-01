@@ -7,8 +7,7 @@ function Main(props){
 
     const [selectedFriend, setSelectedFriend] = useState('')
     const [messages, setMessages] = useState([])
-    const [unreadCount, setUnreadCount] = useState(0)
-    const [unreadMessages, setUnreadMessages] = useState([])
+    const [friendRequests, setFriendRequests] = useState([])
 
     let userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -19,7 +18,10 @@ function Main(props){
         socket,
     } = props
 
-    
+    // useEffect(()=>{
+    //     socket.emit("joinRoom", user.email)
+    // }, [])
+
     friendsInfo && friendsInfo.length > 0 && socket.on("friendStatusChange", (friendEmail, status) => {
         if(friendEmail !== user.email){
         console.log("friendStatusChange");
@@ -64,7 +66,9 @@ function Main(props){
 
     friendsInfo && friendsInfo.length > 0 && socket.on(user.email, (messageData) => {
         console.log(messageData);
-        if(!(messageData.senderEmail == user.email) && !(messageData.senderEmail == selectedFriend.email)){
+        console.log(selectedFriend);
+        console.log(!(messageData.senderEmail === user.email) && !(messageData.senderEmail === selectedFriend.email));
+        if(!(messageData.senderEmail === user.email) && !(messageData.senderEmail === selectedFriend.email)){
             // message IS NOT from the opened chat so we 
             // check if its from one of our friends
             let filteredFriendArray = friendsInfo.filter((friend) => {
@@ -103,6 +107,7 @@ function Main(props){
 
         } else {
         // message IS from the opened chat
+        socket.emit("markAsRead", user.email, messageData.receiverEmail)
         let messageDate = convertIntoTimeZone(messageData.date)
         setMessages(prev => {
             if(prev && (prev.length > 0) && (prev[0].date.toLocaleString() == messageDate.toLocaleString())){
@@ -162,7 +167,10 @@ function Main(props){
                 convertIntoTimeZone={convertIntoTimeZone}
                 userTimeZone={userTimeZone}
             />) : <FriendsScreen 
+                socket={socket}
                 selectedFriend={selectedFriend}
+                user={user}
+                friendsInfo={friendsInfo}
             />}
         </div>
     )

@@ -5,11 +5,15 @@ import { RiInbox2Fill } from "react-icons/ri";
 import { FaQuestionCircle } from "react-icons/fa";
 import FriendsScreenButton from "./FriendsScreenButton"
 import AddFriend from "./AddFriend";
+import Online from "./Online";
 
 function FriendsScreen(props){
 
     let {
         selectedFriend,
+        socket,
+        user,
+        friendsInfo,
     } = props
 
     const [selectedButton,setSelectedButton] = useState("Online")
@@ -66,8 +70,9 @@ function FriendsScreen(props){
                     </div>
                 </div>
             </div>
-            {selectedButton == "Add Friend" && <AddFriend />}
-        </div>
+            {selectedButton == "Add Friend" && <AddFriend socket={socket} user={user} friendsInfo={friendsInfo} />}
+            {selectedButton == "Online" && <Online />}
+            </div>
     )
 }
 

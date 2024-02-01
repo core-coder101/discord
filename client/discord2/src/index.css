@@ -1003,6 +1003,93 @@ html{
 }
 .AddFriendDiv{
   height: 100%;
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.AddFriendInnerDiv{
+  border-bottom: 1px solid rgb(63, 65, 71);
+  padding: 15px 30px 15px 30px;
+}
+.AddFriendInnerDiv input{
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  color: #949BA4;
+  width: 63%;
+}
+.AddFriendInnerDiv button{
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  color: white;
+  border-radius: 0.25rem;
+  background-color: #5865F2;
+  transition: all 0.15s;
+  padding: 4px ;
+  min-width: max-content;
+  width: 35%;
+}
+.AddFriendInnerDiv button:hover{
+  background-color:  #4752C4;
+}
+.AddFriendInputDiv{
+  padding: 10px;
+  background-color: #1E1F22;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 0.5rem;
+}
+.AddFriendInnerDiv h6{
+  color: white;
+  margin: 0;
+  margin-bottom: 10px;
+}
+.AddFriendInnerDiv > p{
+  color: #949BA4;
+  margin: 0;
+  margin-bottom: 10px;
+}
+.ActiveNowDiv{
+  height: 100%;
+  width: 40%;
+  border-left: 1px solid rgb(63, 65, 71);
+}
+.ActiveNowEmptyDiv{
+  padding: 20px;
+}
+.ActiveNowEmptyDiv h5{
+  color: white;
+  font-weight: 700;
+}
+.ActiveNowEmptyDiv h6{
+  text-align: center;
+  color: white;
+  margin: 0;
+  margin-top: 25px;
+}
+.ActiveNowEmptyDiv p{
+  text-align: center;
+  color: #949BA4;
+  font-size: smaller;
+  margin: 0;
+  margin-top: 5px;
+}
+/* ------------------------------- Online.jsx ------------------------------- */
+.OnlineFriendsDiv{
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 70%;
-  
+  height: 100%;
+}
+.OnlineFriendsDiv > p{
+  color: #949BA4;
+}
+/* ------------------------------- AddFriend.jsx ------------------------------- */
+.AddFriendError{
+  margin: 0;
+  margin-top: 10px;
+  color: rgb(239, 82, 82);
 }

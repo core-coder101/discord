@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const bcrypt = require('bcryptjs')
 const { resolve } = require('path')
+const { rejects } = require('assert')
 
 const db = mysql.createConnection({
     host: "localhost",
@@ -37,7 +38,10 @@ const io = new Server(server, {
 io.on("connection", (socket)=>{
 
     let userEmail
-
+    // socket.on("joinRoom", (userEmail)=>{
+    //     console.log("joined room ", userEmail);
+    //     socket.join(userEmail)
+    // })
     socket.on("registerUser", async (data) => {
 
         try{
@@ -55,8 +59,22 @@ io.on("connection", (socket)=>{
         if(dbEmail.length > 0){
             socket.emit("registerError", "Email already in use")
             return
-        } else{}
+        }
+        const dbUserName = await new Promise((resolve,reject) => {
+            db.query("SELECT * FROM users WHERE userName = ?", [data.userName], (err,results) =>{
+                if(err){
+                    reject(err)
+                } else{
+                    resolve(results)
+                }
+            })
+        })
         
+        if(dbUserName.length > 0){
+            socket.emit("registerError", "Username must be unique")
+            return
+        }
+
         let hashedPassword = await bcrypt.hash(data.password, 8)
         let colorsArray = ["black", "blue", "fuchsia", "gray", "#3BA55C","maroon","olive",'#E44235', 'teal', '#FAA61A', '#E1721F', '#904FAD', '#757E8A']
         console.log(colorsArray.length);
@@ -238,9 +256,15 @@ io.on("connection", (socket)=>{
             console.log(err);
         }
     })
-    socket.on("markAsUnRead", (friendEmail, userEmail) => {
-        db.query("UPDATE friends SET unRead = unRead + 1 WHERE (userEmail = ? AND friendEmail = ?)", [userEmail, friendEmail])
-    })
+    // socket.on("markAsUnRead", (friendEmail, userEmail) => {
+    //     db.query("UPDATE friends SET unRead = unRead + 1 WHERE (userEmail = ? AND friendEmail = ?)", [userEmail, friendEmail], (err, result) => {
+    //         if(err){
+    //             console.log(err);
+    //         } else{
+    //             console.log(result);
+    //         }
+    //     })
+    // })
     socket.on("sendMessage", async (message, sender, receiver) => {
         try {
             // console.log("message: ", message);
@@ -280,7 +304,16 @@ io.on("connection", (socket)=>{
                 } else {
                     io.emit(receiver.email, dataToSend)
                     io.emit(sender.email, dataToSend)
-                    socket.emit("markAsUnRead", dataToSend.receiverEmail, dataToSend.senderEmail)
+                    // console.log("sending message to room ", receiver.email);
+                    // io.to(receiver.email).emit(receiver.email, dataToSend)
+                    // socket.emit("markAsUnRead", dataToSend.receiverEmail, dataToSend.senderEmail)
+                    db.query("UPDATE friends SET unRead = unRead + 1 WHERE (userEmail = ? AND friendEmail = ?)", [dataToSend.receiverEmail, dataToSend.senderEmail], (err, result) => {
+                        if(err){
+                            console.log(err);
+                        } else{
+                            console.log(result);
+                        }
+                    })
                 }
             })
 
@@ -291,19 +324,93 @@ io.on("connection", (socket)=>{
     socket.on("markAsRead", (friendEmail, userEmail) => {
         db.query("UPDATE friends SET unRead = 0 WHERE (userEmail = ? AND friendEmail = ?)", [userEmail, friendEmail])
     })
-    
-
-
-
-    socket.on("disconnect", () => {
-        db.query("UPDATE users SET status = ? WHERE email = ?", ["offline", userEmail], (err) => {
-            if(err){
-                console.log(err);
-            } else{
-                console.log("offline");
-                io.emit("friendStatusChange", userEmail,"offline")
+    socket.on("sendFriendRequest", async (enteredUserName, user)=>{
+        try{
+            let columnsToGet = ["id","email","displayName","userName","photoURL","color"]
+            let dbDataArr = await new Promise((resolve,reject)=>{
+                db.query("SELECT ?? FROM users WHERE userName = ?", [columnsToGet, enteredUserName], (err,result)=>{
+                    if(err){
+                        reject(err)
+                    } else{
+                        resolve(result)
+                    }
+                })
+            })
+            if(!(dbDataArr && dbDataArr.length > 0)){
+                // the entered username is not in db
+                socket.emit("friendRequestError", "Username not found")
+                return;
             }
-        })
+
+            let friendRequestData = await new Promise((resolve,reject)=>{
+                db.query("SELECT * FROM friendrequests WHERE receiverEmail = ?", [enteredUserName], (err,result)=>{
+                    if(err){
+                        reject(err);
+                    } else{
+                        resolve(result)
+                    }
+                })
+            })
+
+            if(friendRequestData && friendRequestData.length > 0){
+                // a request was found in friendrequests table
+                socket.emit("friendRequestError", "Already pending request")
+                return;
+            }
+
+                let [dbData] =  dbDataArr
+                let data = {
+                    senderUserName: user.userName,
+                    senderEmail: user.Email,
+                    receiverUserName: dbData.userName,
+                    receiverEmail: dbData.email,
+                    receiverDisplayName: dbData.displayName,
+                    receiverPhotoURL: dbData.photoURL,
+                    receiverColor: dbData.color,
+                }
+                await new Promise((resolve,reject)=>{
+                    db.query("INSERT INTO friendrequests SET ?", [data], (err) => {
+                        if(err){
+                            reject(err)
+                        } else {
+                            resolve;
+                        }
+                    })
+                })
+                let senderEventName = ("friendRequest", data.receiverEmail)
+                let receiverEventName = ("friendRequest", data.senderEmail)
+                io.emit(senderEventName, data)
+                io.emit(receiverEventName, data)
+                console.log("Friend Request sent, data: ", data);
+            
+
+        } catch(err){
+            console.log(err);
+        }
+    })
+
+
+
+    let disconnected = false
+    socket.on("disconnect", async () => {
+        try{
+            if(!disconnected){
+                disconnected = true
+                await new Promise((resolve,reject)=>{
+                    db.query("UPDATE users SET status = ? WHERE email = ?", ["offline", userEmail], (err) => {
+                        if(err){
+                            reject(err);
+                        } else{
+                            console.log("offline");
+                            io.emit("friendStatusChange", userEmail,"offline")
+                            resolve;
+                        }
+                    })
+                })
+        }
+        } catch(err){
+            console.log(err);
+        }
     })
 })
 
