@@ -6,6 +6,7 @@ import { FaQuestionCircle } from "react-icons/fa";
 import FriendsScreenButton from "./FriendsScreenButton"
 import AddFriend from "./AddFriend";
 import Online from "./Online";
+import Pending from "./Pending";
 
 function FriendsScreen(props){
 
@@ -14,6 +15,8 @@ function FriendsScreen(props){
         socket,
         user,
         friendsInfo,
+        friendRequests,
+        setFriendRequests,
     } = props
 
     const [selectedButton,setSelectedButton] = useState("Online")
@@ -70,8 +73,18 @@ function FriendsScreen(props){
                     </div>
                 </div>
             </div>
-            {selectedButton == "Add Friend" && <AddFriend socket={socket} user={user} friendsInfo={friendsInfo} />}
+            {selectedButton == "Add Friend" && <AddFriend
+                socket={socket}
+                user={user}
+                friendsInfo={friendsInfo}
+            />}
             {selectedButton == "Online" && <Online />}
+            {selectedButton == "Pending" && <Pending 
+                friendRequests={friendRequests}
+                setFriendRequests={setFriendRequests}
+                user={user}
+                socket={socket}
+            />}
             </div>
     )
 }

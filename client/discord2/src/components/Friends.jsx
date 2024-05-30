@@ -33,6 +33,7 @@ function Friends(props){
         handleReset,
         selectedFriend,
         setFriendsInfo,
+        
     } = props
 
     // for scrollbar
@@ -133,11 +134,13 @@ function Friends(props){
                     <p>Find or start a conversation</p>
                 </div>
             </div>
-            <div onClick={()=>{setSelectedFriend('')}} className="SideBarPanels">
+            <div onClick={()=>{setSelectedFriend({email: ""})
+            console.log(selectedFriend)}} className="SideBarPanels">
                 <div>
                     <IoPerson className="sideBarIcons" color="#949BA4" />
                 </div>
                 <h6>Friends</h6>
+                <div className="notifOuterDiv"></div>
             </div>
             <div className="SideBarPanels">
                 <div>

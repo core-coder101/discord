@@ -129,7 +129,7 @@ function Chat(props){
                 {/* <RecentMessage />
                 <Message />
                 <DateSeperator /> */}
-                {messages && messages.length > 0 && messages.map((message, index) => {
+                {messages && messages.length > 0 ? messages.map((message, index) => {
                     if(!(index == messages.length - 1)){
                         let prevMessage = messages[index + 1]
                         let prevDate = prevMessage.date.getDate()
@@ -182,7 +182,10 @@ function Chat(props){
                                 />
                     }
                     
-                })}
+                }) : (
+                        <p className="noMessages">This is the beginning of your conversation with @{selectedFriend.userName}</p>
+                )
+                }
 
             </div>
                 <div className="MessageInputDiv">

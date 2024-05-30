@@ -249,9 +249,7 @@ io.on("connection", (socket)=>{
                     }
                 })
             })
-            if(messages && messages.length > 0){
                 socket.emit("receiveMessages", messages)
-            }
         } catch(err){
             console.log(err);
         }
@@ -326,7 +324,7 @@ io.on("connection", (socket)=>{
     })
     socket.on("sendFriendRequest", async (enteredUserName, user)=>{
         try{
-            let columnsToGet = ["id","email","displayName","userName","photoURL","color"]
+            let columnsToGet = ["userName","displayName","photoURL","color"]
             let dbDataArr = await new Promise((resolve,reject)=>{
                 db.query("SELECT ?? FROM users WHERE userName = ?", [columnsToGet, enteredUserName], (err,result)=>{
                     if(err){
@@ -336,14 +334,14 @@ io.on("connection", (socket)=>{
                     }
                 })
             })
-            if(!(dbDataArr && dbDataArr.length > 0)){
+            if(!(dbDataArr.length > 0)){
                 // the entered username is not in db
                 socket.emit("friendRequestError", "Username not found")
                 return;
             }
 
             let friendRequestData = await new Promise((resolve,reject)=>{
-                db.query("SELECT * FROM friendrequests WHERE receiverEmail = ?", [enteredUserName], (err,result)=>{
+                db.query("SELECT * FROM friendrequests WHERE receiverUserName = ?", [enteredUserName], (err,result)=>{
                     if(err){
                         reject(err);
                     } else{
@@ -359,30 +357,219 @@ io.on("connection", (socket)=>{
             }
 
                 let [dbData] =  dbDataArr
-                let data = {
+                let dataForDB = {
                     senderUserName: user.userName,
-                    senderEmail: user.Email,
                     receiverUserName: dbData.userName,
-                    receiverEmail: dbData.email,
-                    receiverDisplayName: dbData.displayName,
-                    receiverPhotoURL: dbData.photoURL,
-                    receiverColor: dbData.color,
+                }
+                let dataForSender = {
+                    ...dataForDB,
+                    ...dbData,
+                }
+                let dataForReceiver = {
+                    ...dataForDB,
+                    userName: user.userName,
+                    displayName: user.displayName,
+                    photoURL: user.photoURL,
+                    color: user.color,
                 }
                 await new Promise((resolve,reject)=>{
-                    db.query("INSERT INTO friendrequests SET ?", [data], (err) => {
+                    db.query("INSERT INTO friendrequests SET ?", [dataForDB], (err) => {
                         if(err){
                             reject(err)
                         } else {
-                            resolve;
+                            resolve();
                         }
                     })
                 })
-                let senderEventName = ("friendRequest", data.receiverEmail)
-                let receiverEventName = ("friendRequest", data.senderEmail)
-                io.emit(senderEventName, data)
-                io.emit(receiverEventName, data)
-                console.log("Friend Request sent, data: ", data);
+                let senderEventName = ("friendRequest" + dataForDB.senderUserName)
+                let receiverEventName = ("friendRequest" + dataForDB.receiverUserName)
+                socket.emit("friendRequestSuccess", "Friend request sent!")
+                io.emit(senderEventName, dataForSender)
+                io.emit(receiverEventName, dataForReceiver)
+                console.log("Friend Request sent, dataForDB: ", dataForDB);
             
+
+        } catch(err){
+            console.log(err);
+        }
+    })
+    socket.on("getFriendRequests", async (userName)=>{
+        try{
+            let dbData = await new Promise((resolve,reject) => {
+                db.query("SELECT senderUserName,receiverUserName FROM friendrequests WHERE (senderUserName = ? OR receiverUserName = ?)", [userName,userName], (err, result)=>{
+                    if(err){
+                        reject(err)
+                    } else{
+                        resolve(result)
+                    }
+                })
+            })
+            console.log("dbData: ", dbData);
+            if(dbData && dbData.length > 0){
+                // socket.emit("receiveFriendRequests", dbData)
+                let finalArr = await Promise.all(dbData.map(async(request)=>{
+                    try{
+                        console.log("request: ", request);
+                        let UserNameToFind = ""
+                        if(request.senderUserName == userName){
+                            UserNameToFind = request.receiverUserName
+                        } else {
+                            UserNameToFind = request.senderUserName
+                        }
+                        let userInfo = await new Promise((resolve,reject)=>{
+                            db.query("SELECT displayName,photoURL,color FROM users WHERE userName = ?", [UserNameToFind], (err, result)=>{
+                                if(err){
+                                    reject(err)
+                                } else{
+                                    resolve(result[0])
+                                }
+                            })
+                        })
+
+                        return {
+                            ...request,
+                            ...userInfo,
+                        }
+
+                    } catch(err){
+                        console.log(err);
+                    }
+                    
+                }))
+
+                socket.emit("receiveFriendRequests", finalArr)
+
+            }
+        } catch(err){
+            console.log(err);
+        }
+    })
+    socket.on("removeRequest", async (request)=>{
+        try{
+            await new Promise((resolve,reject)=>{
+                db.query("DELETE FROM friendrequests WHERE senderUserName = ? AND receiverUserName = ?", [request.senderUserName, request.receiverUserName], (err)=>{
+                    if(err){
+                        reject(err)
+                    } else{
+                        resolve("done");
+                    }
+                })
+            })
+                let senderEventName = ("removeFriendRequest" + request.senderUserName)
+                let receiverEventName = ("removeFriendRequest" + request.receiverUserName)
+                io.emit(senderEventName, request)
+                io.emit(receiverEventName, request)
+
+        } catch(err){
+            console.log(err);
+        }
+    })
+    socket.on("acceptRequest", async (request, user)=>{
+        try{
+            // await new Promise((resolve, reject)=>{
+            //     db.query("DELETE FROM friendrequests WHERE senderUserName = ? AND receiverUserName = ?", [request.senderUserName, request.receiverUserName], (err)=>{
+            //         if(err){
+            //             reject(err)
+            //         } else{
+            //             resolve();
+            //         }
+            //     })
+            // })
+
+            let friendEmailArr = await new Promise((resolve, reject)=>{
+                db.query("SELECT email FROM users WHERE userName = ?", [request.senderUserName], (err, result)=>{
+                    if(err){
+                        reject(err)
+                    } else{
+                        resolve(result)
+                    }
+                })
+            })
+
+            if(!(friendEmailArr && friendEmailArr.length > 0)){
+                // user doesn't exist in db
+                return
+            }
+            let friendEmail = friendEmailArr[0].email
+            let friendInfoArr = await new Promise((resolve,reject)=>{
+                db.query("SELECT * FROM friends WHERE (userEmail = ? AND friendEmail = ?) OR (userEmail = ? AND friendEmail = ?)", [user.email, friendEmail, friendEmail, user.email], (err, result)=>{
+                    if(err){
+                        reject(err);
+                    } else{
+                        resolve(result)
+                    }
+                })
+            })
+
+            if(friendInfoArr && friendInfoArr.length > 0){
+                return
+            }
+
+            let date = new Date()
+
+            let dataForDB1 = {
+                userEmail: user.email,
+                friendEmail: friendEmail,
+                lastMessageDate: date,
+            }
+            let dataForDB2 = {
+                userEmail: friendEmail,
+                friendEmail: user.email,
+                lastMessageDate: date,
+            }
+
+
+
+            await new Promise((resolve, reject)=>{
+                db.query("INSERT INTO friends SET ?", dataForDB1,(err)=>{
+                    if(err){
+                        reject(err)
+                    } else{
+                        resolve()
+                    }
+                })
+            })
+            await new Promise((resolve, reject)=>{
+                db.query("INSERT INTO friends SET ?", dataForDB2,(err)=>{
+                    if(err){
+                        reject(err)
+                    } else{
+                        resolve()
+                    }
+                })
+            })
+            let columnsToGet = ["id", "email", "displayName", "userName", "photoURL", "color", "status"]
+            let friendInfo = await new Promise((resolve, reject) => {
+                db.query("SELECT ?? FROM users WHERE email = ?", [columnsToGet, friendEmail], (err, result)=>{
+                    if(err){
+                        reject(err)
+                    } else{
+                        resolve(result[0])
+                    }
+                })
+            })
+            
+            let userToSend = {
+                id: user.id,
+                email: user.email,
+                displayName: user.displayName,
+                userName: user.userName,
+                photoURL: user.photoURL,
+                color: user.color,
+                status: user.status,
+                unread: 0,
+            }
+            let friendInfoToSend = {
+                ...friendInfo,
+                unread: 0,
+            }
+
+
+            console.log("friendInfoToSend: ", friendInfoToSend);
+            console.log("userToSend: ", userToSend);
+            socket.emit("addFriend" + user.email, friendInfoToSend)
+            io.emit("addFriend" + friendEmail, userToSend)
+
 
         } catch(err){
             console.log(err);
@@ -403,7 +590,7 @@ io.on("connection", (socket)=>{
                         } else{
                             console.log("offline");
                             io.emit("friendStatusChange", userEmail,"offline")
-                            resolve;
+                            resolve();
                         }
                     })
                 })

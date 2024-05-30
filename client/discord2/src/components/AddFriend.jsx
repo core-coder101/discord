@@ -8,38 +8,49 @@ function AddFriend(props){
         friendsInfo,
     } = props
 
-    const [inputvalue, setInputValue] = useState("")
+    const [inputValue, setInputValue] = useState("")
     const [disabled, setDisabled] = useState(true)
     const [customClass, setCustomClass] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
+    const [successMessage, setSuccessMessage] = useState("")
 
     function handleSubmit(e){
         e.preventDefault()
-        if(inputvalue === user.userName){
+        if(inputValue === user.userName){
             setErrorMessage("Sadly you can't friend yourself -_-")
             return;
         }
         let filtered = []
         filtered = friendsInfo.filter((friend)=>{
-            return friend.userName === inputvalue
+            return friend.userName === inputValue
         })
         if(filtered.length > 0){
             setErrorMessage("Alredy friends with that user")
             return;
         }
-        socket.emit("sendFriendRequest", inputvalue, user)
+        socket.emit("sendFriendRequest", inputValue, user)
     }
     useEffect(()=>{
         setErrorMessage("")
-        if(inputvalue === ""){
+        setSuccessMessage("")
+        if(inputValue === ""){
             setDisabled(true)
             setCustomClass("disabledButton")
         } else{
             setDisabled(false)
             setCustomClass("")
         }
-    }, [inputvalue])
+    }, [inputValue])
     
+    socket.on("friendRequestError", (errorMessage)=>{
+        setErrorMessage(errorMessage)
+        setSuccessMessage("")
+    })
+
+    socket.on("friendRequestSuccess", (message)=>{
+        setErrorMessage("")
+        setSuccessMessage(message)
+    })
 
     return (
         <div className="AddFriendMainDiv">
@@ -49,10 +60,11 @@ function AddFriend(props){
                     <p>You can add friends with their Discord username.</p>
                     <form onSubmit={(e)=>{handleSubmit(e)}}>
                     <div className="AddFriendInputDiv">
-                        <input onChange={(e)=>{setInputValue(e.target.value)}} type="text" required placeholder="You can add friends with their Discord username." />
+                        <input value={inputValue} onChange={(e)=>{setInputValue(e.target.value)}} type="text" required placeholder="You can add friends with their Discord username." />
                         <button className={customClass} disabled={disabled}>Send Friend Request</button>
                     </div>
                     {errorMessage && <p className="AddFriendError">{errorMessage}</p>}
+                    {successMessage && <p className="AddFriendSuccess">{successMessage}</p>}
                     </form>
                 </div>
             </div>

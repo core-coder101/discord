@@ -373,7 +373,6 @@ html{
   display: flex;
   align-items: flex-end;
 }
-
 /* ---------------------------------- Chat ---------------------------------- */
 
 .mainChatDiv{
@@ -490,6 +489,9 @@ html{
   justify-content: flex-end;
   flex-direction: column;
   overflow: hidden;
+}
+.noMessages{
+  color: rgb(176, 171, 171);
 }
 /* ------------------------------- Message.jsx ------------------------------- */
 .MessageMainDiv{
@@ -1092,4 +1094,96 @@ html{
   margin: 0;
   margin-top: 10px;
   color: rgb(239, 82, 82);
+}
+.AddFriendSuccess{
+  margin: 0;
+  margin-top: 10px;
+  color: rgb(82, 239, 87);
+}
+/* ------------------------------- Pending.jsx ------------------------------- */
+.Pending{
+  border-bottom: 1px solid #393C41;
+  width: 90%;
+  margin-top: 30px;
+}
+.Pending h6{
+  color: #aeb5bf;
+  font-size: smaller;
+}
+.PendingDiv{
+  height: 100%;
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+.PendingDiv{
+  overflow-y: scroll;
+}
+/* ------------------------------- FriendRequest.jsx ------------------------------- */
+.RequestDiv{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 93%;
+  padding: 10px;
+  border: 0;
+  border-radius: 0.5rem;
+}
+.RequestDiv:hover{
+  cursor: pointer;
+  background-color: #393C41;
+}
+.RequestDiv .imageAndStatus {
+  margin: 0;
+}
+.requestInfo{
+  display: flex;
+  align-items: center;
+}
+.requestInfo h6{
+  color: white;
+  font-weight: 700;
+  margin: 0;
+  margin-left: 10px;
+}
+.requestInfo p{
+  color: #b0b8c1;
+  margin: 0;
+  margin-left: 10px;
+  font-size: smaller;
+  font-weight: 500;
+}
+.requestIconDiv{
+  width: 35px;
+  height: 35px;
+  border: 0;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.requestIcon{
+  height: 25px;
+  width: 25px;
+  color: #b0b8c1;
+}
+.cross:hover{
+  color: rgb(227, 80, 80);
+}
+.tick:hover{
+  color: rgb(119, 220, 119);
+}
+.friendRequestIconsDiv{
+  display: flex;
+  flex-direction: row-reverse;
+  width: 80px;
+  justify-content: space-between;
+}
+.friendRequestInfo{
+  display: flex;
+}
+.friendRequestInfo > p{
+  font-size: 13;
 }

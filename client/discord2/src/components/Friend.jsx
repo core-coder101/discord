@@ -25,8 +25,9 @@ function Friend(props){
 
     return(
         <div onClick={async ()=>{
+            
             handleReset()
-            setSelectedFriend(friend)
+            setSelectedFriend(prev => (friend))
             setFriendsInfo((prev) => {
                 return prev.map((entry) => {
                     if(entry.email == friend.email){

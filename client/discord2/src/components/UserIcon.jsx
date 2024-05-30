@@ -22,7 +22,9 @@ function UserIcon(props){
                     (<div className="customUserIcon" style={{backgroundColor: user.color}}>
                         <FaDiscord className="userIcon" color="white" />
                     </div>)}
-                    { user.status == 'online' ? <img className="online" src="https://i.postimg.cc/pXqvD8RN/online.png" /> : <img className="offline" src="https://i.postimg.cc/g2y6mgW9/offline.png" /> }
+                    { user.status ?
+                    user.status == 'online' ? <img className="online" src="https://i.postimg.cc/pXqvD8RN/online.png" /> : <img className="offline" src="https://i.postimg.cc/g2y6mgW9/offline.png" />
+                    : null }
                 </div>
             </div>
         </div>

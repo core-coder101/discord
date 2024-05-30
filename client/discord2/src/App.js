@@ -7,7 +7,7 @@ import io from "socket.io-client"
 
 document.addEventListener('contextmenu',event => {
   if(event.button === 2){
-    // event.preventDefault()
+    event.preventDefault()
   }
 }, false)
 
@@ -18,11 +18,11 @@ function App() {
 
   const cookies = new Cookies()
   let socket;
-  socket = io.connect("http://localhost:5000/")
+  socket = io.connect("localhost:5000")
 
   function backupConnection(){
     console.log("backupConnection Called");
-    socket = io.connect("ws://gttlsr4m-5000.euw.devtunnels.ms/");
+    socket = io.connect("https://dh960dbq-5000.inc1.devtunnels.ms/");
   }
 
   socket.on("connect_error", (err)=>{
@@ -45,15 +45,16 @@ function App() {
     }
   }, [])
 
-
-  socket.on('receiveUserData', (dbData)=>{
-    console.log(dbData);
-    setUser(dbData);
-  })
-  socket.on("receiveFriendsData", (data) => {
-    console.log(data);
-    setFriendsInfo(data);
-  })
+  useEffect(()=>{
+    socket.on('receiveUserData', (dbData)=>{
+      console.log(dbData);
+      setUser(dbData);
+    })
+    socket.on("receiveFriendsData", (data) => {
+      console.log(data);
+      setFriendsInfo(data);
+    })
+  }, [])
 
   return (
     <div className="App">
