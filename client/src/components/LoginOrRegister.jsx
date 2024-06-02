@@ -20,9 +20,9 @@ function LoginOrRegister(props){
             cookies.set("token", token,)
             let decoded = jwtDecode(token)
             if(decoded){
+                socket.emit("setStatus", decoded, "online")
                 socket.emit("requestUserData", decoded)
                 socket.emit("requestFriendsData", decoded)
-                socket.emit("setStatus", decoded, "online")
             }
         }
         socket.on("createToken", handleCreateToken)

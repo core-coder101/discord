@@ -18,7 +18,7 @@ function App() {
 
   const cookies = new Cookies()
   let socket;
-  socket = io.connect("localhost:5000")
+  socket = io.connect("https://dh960dbq-5000.inc1.devtunnels.ms/")
 
   function backupConnection(){
     console.log("backupConnection Called");
@@ -43,9 +43,9 @@ function App() {
     if(token){
       let decoded = jwtDecode(token)
       if(decoded){
+        socket.emit("setStatus", decoded, "online")
         socket.emit("requestUserData", decoded)
         socket.emit("requestFriendsData", decoded)
-        socket.emit("setStatus", decoded, "online")
       }
 
     }

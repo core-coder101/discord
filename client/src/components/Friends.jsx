@@ -187,7 +187,7 @@ function Friends(props){
                     />
                     <div className="selfInfo">
                         <h6>{user.displayName}</h6>
-                        <p>Online</p>
+                        <p>{user.status}</p>
                     </div>
                 </div>
                 <div className="selfStatusIconsDiv">

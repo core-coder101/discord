@@ -81,8 +81,6 @@ io.on("connection", (socket)=>{
         let x = Math.floor(Math.random() * 12)
         let color = colorsArray[x]
 
-        // let createdAt = new Date()
-
         data = {
             ...data,
             password: hashedPassword,
@@ -144,6 +142,7 @@ io.on("connection", (socket)=>{
                             httpOnly: true
                         }
                         socket.emit("createToken",token, cookieOptions)
+                        socket.emit("setStatus", dbData[0].email, "online")
                     } else if(!matched){
                         // Correct Email but Wrong Password
                         socket.emit('loginError', 'Incorrect password')
@@ -225,7 +224,7 @@ io.on("connection", (socket)=>{
             console.log(err);
         }
     })
-    socket.on("setStatus", (data,status) => {
+    socket.on("setStatus", (data, status) => {
 
         userEmail = data.email
 
@@ -608,6 +607,6 @@ io.on("connection", (socket)=>{
 })
 
 
-server.listen(process.env.PORT, () => {
+server.listen(5000, () => {
     console.log("Server Running on Port 5000");
 })
