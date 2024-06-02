@@ -41,16 +41,24 @@ function AddFriend(props){
             setCustomClass("")
         }
     }, [inputValue])
-    
-    socket.on("friendRequestError", (errorMessage)=>{
-        setErrorMessage(errorMessage)
-        setSuccessMessage("")
-    })
 
-    socket.on("friendRequestSuccess", (message)=>{
-        setErrorMessage("")
-        setSuccessMessage(message)
-    })
+    useEffect(()=>{
+        function handlefriendRequestError(errorMessage){
+            setErrorMessage(errorMessage)
+            setSuccessMessage("")
+        }
+        function handleRequestSuccess(message){
+            setErrorMessage("")
+            setSuccessMessage(message)
+        }
+        socket.on("friendRequestError", handlefriendRequestError)
+        socket.on("friendRequestSuccess", handleRequestSuccess)
+
+        return () => {
+            socket.off("friendRequestError", handlefriendRequestError)
+            socket.off("friendRequestSuccess", handleRequestSuccess)
+        }
+    }, [])
 
     return (
         <div className="AddFriendMainDiv">

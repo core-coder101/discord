@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 
 function Register(props){
@@ -32,9 +32,14 @@ function Register(props){
         setRegisterError('')
     }
 
-    socket.on('registerError', (errorMessage)=>{
-        setRegisterError(errorMessage)
+    useEffect(() => {
+        function handleRegisterError(errorMessage){
+            setRegisterError(errorMessage)
+        }
+        socket.on('registerError', handleRegisterError)
+        return () => {socket.off('registerError', handleRegisterError)}
     })
+
 
     function registerUser(){
         socket.emit("registerUser", formData)

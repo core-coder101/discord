@@ -7,6 +7,15 @@ function FriendProfile(props){
         user
     } = props
 
+    let createdAt = new Date(user.createdAt)
+    let year = createdAt.getFullYear()
+    let date = createdAt.getDate()
+    let monthNumber = createdAt.getMonth()
+    let monthsArr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    let month = monthsArr[monthNumber]
+
+    let dateString = month + " " + date + ", " + year
+
     return(
         <div className="FriendProfileDiv">
             <div>
@@ -32,8 +41,8 @@ function FriendProfile(props){
                         <p>{user.userName}</p>
                     </div>
                     <div>
-                        <h6>DISCORD MEMBER SINCE</h6>
-                        <p>Feature not added yet</p>
+                        <h6>MEMBER SINCE</h6>
+                        <p>{dateString}</p>
                     </div>
                     <div className="NoteDiv">
                         <h6>Note</h6>

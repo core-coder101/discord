@@ -24,13 +24,19 @@ function App() {
     console.log("backupConnection Called");
     socket = io.connect("https://dh960dbq-5000.inc1.devtunnels.ms/");
   }
+  useEffect(()=>{
+    function handleError(err){
+      console.log(err);
+  
+      socket.disconnect()
+      backupConnection()
+    }
+    socket.on("connect_error", handleError)
 
-  socket.on("connect_error", (err)=>{
-    console.log(err);
-
-    socket.disconnect()
-    backupConnection()
-  })
+    return () => {
+      socket.off("connect_error", handleError)
+    }
+  }, [])
 
   useEffect(() =>{
     let token = cookies.get('token')
@@ -46,14 +52,26 @@ function App() {
   }, [])
 
   useEffect(()=>{
-    socket.on('receiveUserData', (dbData)=>{
+
+    function handleReceiveUserData(dbData){
       console.log(dbData);
       setUser(dbData);
-    })
-    socket.on("receiveFriendsData", (data) => {
+    }
+
+    function handleReceiveFriendsData(data){
       console.log(data);
       setFriendsInfo(data);
-    })
+    }
+
+
+
+    socket.on('receiveUserData', handleReceiveUserData)
+    socket.on("receiveFriendsData", handleReceiveFriendsData)
+
+    return () => {
+      socket.off('receiveUserData', handleReceiveUserData)
+      socket.off("receiveFriendsData", handleReceiveFriendsData)
+    }
   }, [])
 
   return (

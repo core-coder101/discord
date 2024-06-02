@@ -81,6 +81,8 @@ io.on("connection", (socket)=>{
         let x = Math.floor(Math.random() * 12)
         let color = colorsArray[x]
 
+        // let createdAt = new Date()
+
         data = {
             ...data,
             password: hashedPassword,
@@ -190,7 +192,7 @@ io.on("connection", (socket)=>{
             })
             let friendsData = await new Promise(async (resolve,reject) => {
                 let tempArr = []
-                let columnsToGet = ["id","email", "displayName", "userName", "photoURL", "color", "status",]
+                let columnsToGet = ["id","email", "displayName", "userName", "photoURL", "color", "status", "createdAt"]
                 console.log("dbData", dbData);
                 await Promise.all(dbData.map(async (data) =>{
                     try{
@@ -580,9 +582,14 @@ io.on("connection", (socket)=>{
 
     let disconnected = false
     socket.on("disconnect", async () => {
+
+        if(disconnected){
+            return;
+        }
+
+        disconnected = true
+
         try{
-            if(!disconnected){
-                disconnected = true
                 await new Promise((resolve,reject)=>{
                     db.query("UPDATE users SET status = ? WHERE email = ?", ["offline", userEmail], (err) => {
                         if(err){
@@ -594,7 +601,6 @@ io.on("connection", (socket)=>{
                         }
                     })
                 })
-        }
         } catch(err){
             console.log(err);
         }
@@ -602,6 +608,6 @@ io.on("connection", (socket)=>{
 })
 
 
-server.listen(5000, () => {
+server.listen(process.env.PORT, () => {
     console.log("Server Running on Port 5000");
 })

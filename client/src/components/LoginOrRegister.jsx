@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Login from "./Login";
 import Register from './Register'
 import Cookies from "universal-cookie"
@@ -14,16 +14,21 @@ function LoginOrRegister(props){
 
     const cookies = new Cookies()
 
-    socket.on("createToken", (token, cookieOptions)=>{
+    useEffect(()=> {
+        function handleCreateToken(token, cookieOptions){
 
-        cookies.set("token", token,)
-        let decoded = jwtDecode(token)
-        if(decoded){
-            socket.emit("requestUserData", decoded)
-            socket.emit("requestFriendsData", decoded)
-            socket.emit("setStatus", decoded, "online")
+            cookies.set("token", token,)
+            let decoded = jwtDecode(token)
+            if(decoded){
+                socket.emit("requestUserData", decoded)
+                socket.emit("requestFriendsData", decoded)
+                socket.emit("setStatus", decoded, "online")
+            }
         }
-    })
+        socket.on("createToken", handleCreateToken)
+        return () => {socket.off("createToken", handleCreateToken)}
+    }, [])
+
 
     return(
         selectedPage === 'login' ? <Login 

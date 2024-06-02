@@ -54,14 +54,19 @@ function Chat(props){
         }
     }, [])
 
-    socket.on("receiveMessages", (data)=>{
-        const formattedMessages = data.map((message) => {
-            const formattedMessage = { ...message }
-            formattedMessage.date = convertIntoTimeZone(message.date)
-            return formattedMessage
-        })
-        setMessages(formattedMessages)
-    })
+    useEffect(()=> {
+        function handleReceiveMessages(data){
+            const formattedMessages = data.map((message) => {
+                const formattedMessage = { ...message }
+                formattedMessage.date = convertIntoTimeZone(message.date)
+                return formattedMessage
+            })
+            setMessages(formattedMessages)
+        }
+        socket.on("receiveMessages", handleReceiveMessages)
+        return () => {socket.off("receiveMessages", handleReceiveMessages)}
+    }, [])
+    
 
     
 

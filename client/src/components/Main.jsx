@@ -26,73 +26,95 @@ function Main(props){
         console.log("getFriendRequests");
         socket.emit("getFriendRequests", user.userName)
     }, [])
-    
-    socket.on("receiveFriendRequests", (dbData)=>{
+    useEffect(()=>{
+        function handleReceiveFriendRequest(dbData){
         console.log("received friend requests: ", dbData);
         setFriendRequests(dbData)
-    })
-    let eventName = ("removeFriendRequest" + user.userName)
+    }
+    socket.on("receiveFriendRequests", handleReceiveFriendRequest)
 
-    socket.on(eventName, (request)=>{
-        setFriendRequests((prev) => {
-
-            if(prev && prev.length == 0){
-                return prev
-            }
-
-            return prev.filter(entry => {
-                return !(entry.senderUserName == request.senderUserName && entry.receiverUserName == request.receiverUserName)
+    return () => {socket.off("receiveFriendRequests", handleReceiveFriendRequest)}
+    },[])
+  
+    useEffect(()=>{
+        function handleRemoveFriendRequest(request){
+            setFriendRequests((prev) => {
+                
+                if(prev && prev.length == 0){
+                    return prev
+                }
+                
+                return prev.filter(entry => {
+                    return !(entry.senderUserName == request.senderUserName && entry.receiverUserName == request.receiverUserName)
+                })
             })
-        })
-    })
+        }
 
-    let receiveRequestEvent = ("friendRequest" + user.userName)
+        let eventName = ("removeFriendRequest" + user.userName)
+        socket.on(eventName, handleRemoveFriendRequest)
+        
+        return () => {socket.off(eventName, handleRemoveFriendRequest)}
+    }, [])
 
-    socket.on(receiveRequestEvent, (data)=>{
-        setFriendRequests(prev => {
-            if(prev.length == 0){
-                return [ data ]
-            }
-
-
-
-            if(data.senderUserName == prev[prev.length - 1].senderUserName && data.receiverUserName == prev[prev.length - 1].receiverUserName){
-                return prev
-            } else {
-                return [
-                    data,
-                    ...prev,
-                ]
-            }
-        })
-    })
-
-    friendsInfo && friendsInfo.length > 0 && socket.on("friendStatusChange", (friendEmail, status) => {
-        if(friendEmail !== user.email){
-        console.log("friendStatusChange");
-        setFriendsInfo((prevValue) => {
-            return prevValue.map((value) => {
-                if(value.email === friendEmail){
-                    return {
-                        ...value,
-                        status: status,
-                    }
+    useEffect(()=>{
+        function handleFriendRequest(data){
+            setFriendRequests(prev => {
+                if(prev.length == 0){
+                    return [ data ]
+                }
+    
+    
+    
+                if(data.senderUserName == prev[prev.length - 1].senderUserName && data.receiverUserName == prev[prev.length - 1].receiverUserName){
+                    return prev
                 } else {
-                    return value
+                    return [
+                        data,
+                        ...prev,
+                    ]
                 }
             })
-        })
-        setSelectedFriend((prevValue) => {
-                if(prevValue.email === friendEmail){
-                    return {
-                        ...prevValue,
-                        status: status
-                    }
-                } else {
-                    return prevValue
-                }
-        })
-    }})
+        }
+        let receiveRequestEvent = ("friendRequest" + user.userName)
+        socket.on(receiveRequestEvent, handleFriendRequest)
+        return ()=> {socket.off(receiveRequestEvent, handleFriendRequest)}
+    }, [])
+
+
+    
+    useEffect(()=>{
+            function handleFriendStatusChange(friendEmail, status) {
+                if(friendEmail !== user.email){
+                console.log("friendStatusChange");
+                setFriendsInfo((prevValue) => {
+                    return prevValue.map((value) => {
+                        if(value.email === friendEmail){
+                            return {
+                                ...value,
+                                status: status,
+                            }
+                        } else {
+                            return value
+                        }
+                    })
+                })
+                setSelectedFriend((prevValue) => {
+                        if(prevValue.email === friendEmail){
+                            return {
+                                ...prevValue,
+                                status: status
+                            }
+                        } else {
+                            return prevValue
+                        }
+                })
+            }}
+
+            socket.on("friendStatusChange", handleFriendStatusChange)
+            return ()=>{socket.off("friendStatusChange", handleFriendStatusChange)}
+        }, [])
+
+    
 
     const [resetKey, setResetKey] = useState(0)
 
@@ -272,16 +294,19 @@ function Main(props){
     }, [selectedFriend, friendsInfo, socket, user.email]);
     
     
-
-    socket.on("addFriend" + user.email, (friend) => {
-        setFriendsInfo(prev => {
-            if(friend.email == prev[0].email){
-                return prev
-            } else {
-                return [friend, ...prev]
-            }
-        })
-    })
+    useEffect(()=>{        
+        function handleAddFriend(friend) {
+            setFriendsInfo(prev => {
+                if(friend.email == prev[0].email){
+                    return prev
+                } else {
+                    return [friend, ...prev]
+                }
+            })
+        }
+        socket.on("addFriend" + user.email, handleAddFriend)
+        return ()=>{socket.off("addFriend" + user.email, handleAddFriend)}
+    }, [])
 
 
     return(
