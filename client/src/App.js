@@ -18,7 +18,7 @@ function App() {
 
   const cookies = new Cookies()
   let socket;
-  socket = io.connect("https://dh960dbq-5000.inc1.devtunnels.ms/")
+  socket = io.connect("localhost:5000")
 
   function backupConnection(){
     console.log("backupConnection Called");

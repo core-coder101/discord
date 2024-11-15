@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
 import Friends from './Friends'
 import Chat from "./Chat";
 import FriendsScreen from "./FriendsScreen"
@@ -339,6 +339,7 @@ function Main(props){
                 friendsInfo={friendsInfo}
                 friendRequests={friendRequests}
                 setFriendRequests={setFriendRequests}
+                setSelectedFriend={setSelectedFriend}
             />}
         </div>
     )

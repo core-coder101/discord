@@ -7,10 +7,12 @@ import FriendsScreenButton from "./FriendsScreenButton"
 import AddFriend from "./AddFriend";
 import Online from "./Online";
 import Pending from "./Pending";
+import All from "./All";
 
 function FriendsScreen(props){
 
     let {
+        setSelectedFriend,
         selectedFriend,
         socket,
         user,
@@ -78,12 +80,23 @@ function FriendsScreen(props){
                 user={user}
                 friendsInfo={friendsInfo}
             />}
-            {selectedButton == "Online" && <Online />}
+            {selectedButton == "Online" && <Online 
+                friendsInfo={friendsInfo}
+                socket={socket}
+                setSelectedFriend={setSelectedFriend}
+                message={"ONLINE"}
+            />}
             {selectedButton == "Pending" && <Pending 
                 friendRequests={friendRequests}
                 setFriendRequests={setFriendRequests}
                 user={user}
                 socket={socket}
+            />}
+            {selectedButton == "All" && <All 
+                friendsInfo={friendsInfo}
+                socket={socket}
+                setSelectedFriend={setSelectedFriend}
+                message={"ALL FRIENDS"}
             />}
             </div>
     )

@@ -7,6 +7,7 @@ const mysql = require('mysql')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const jwt = require('jsonwebtoken')
+
 require('dotenv').config()
 const bcrypt = require('bcryptjs')
 const { resolve } = require('path')

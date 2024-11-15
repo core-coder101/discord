@@ -14,7 +14,7 @@ function FriendProfile(props){
     let monthsArr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     let month = monthsArr[monthNumber]
 
-    let dateString = month + " " + date + ", " + year
+    let dateString = month + " " + date.toString() + ", " + year.toString()
 
     return(
         <div className="FriendProfileDiv">
